@@ -1,0 +1,2 @@
+C:/Users/fateh/OneDrive/Desktop/dairy_management/android/app/.cxx/Debug/3642e5l6/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/fateh/OneDrive/Desktop/dairy_management/android/app/.cxx/Debug/3642e5l6/armeabi-v7a/CMakeFiles/rebuild_cache.dir
