@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 class FeedCalculator extends StatefulWidget {
   const FeedCalculator({super.key});
@@ -147,7 +148,7 @@ class _FeedCalculatorState extends State<FeedCalculator> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
           ),
-          child: DropdownButtonFormField<String>(
+          child: DropdownButtonFormField2<String>(
             value: selectedValue,
             decoration: const InputDecoration(
               border: InputBorder.none,

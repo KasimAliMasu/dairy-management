@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 class AnimalList extends StatefulWidget {
   const AnimalList({super.key});
@@ -17,7 +18,7 @@ class _AnimalListState extends State<AnimalList> {
   @override
   void initState() {
     super.initState();
-    _loadAnimalData(); // Load saved data when screen starts
+    _loadAnimalData();
   }
 
   Future<void> _loadAnimalData() async {
@@ -42,33 +43,55 @@ class _AnimalListState extends State<AnimalList> {
     setState(() {
       animalList.add(animalData);
     });
-    _saveAnimalData(); // Save data after adding new animal
+    _saveAnimalData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Animal", style: TextStyle(color: Colors.white)),
+        leading: IconButton(
+          icon: const CircleAvatar(
+            backgroundColor: Colors.white,
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          "Animal",
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
         backgroundColor: Colors.blue,
       ),
       body: animalList.isEmpty
           ? const Center(child: Text("No records found"))
           : ListView.builder(
-        itemCount: animalList.length,
-        itemBuilder: (context, index) {
-          return Card(
-            margin: const EdgeInsets.all(8.0),
-            child: ListTile(
-              leading: animalList[index]['imagePath'] != null
-                  ? Image.file(File(animalList[index]['imagePath']!), width: 50, height: 50, fit: BoxFit.cover)
-                  : const Icon(Icons.image, size: 50),
-              title: Text("ID: ${animalList[index]['id']}"),
-              subtitle: Text("Selected Animal Type: ${animalList[index]['selectedAnimalType']}"),
+              itemCount: animalList.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  margin: const EdgeInsets.all(8.0),
+                  child: ListTile(
+                    leading: animalList[index]['imagePath'] != null
+                        ? Image.file(
+                            File(animalList[index]['imagePath']!),
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                          )
+                        : const Icon(Icons.image, size: 50),
+                    title: Text("ID: ${animalList[index]['id']}"),
+                    subtitle: Text(
+                      "Selected Animal Type: ${animalList[index]['selectedAnimalType']}",
+                    ),
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
@@ -94,7 +117,6 @@ class AddAnimalList extends StatefulWidget {
   State<AddAnimalList> createState() => _AddAnimalListState();
 }
 
-
 class _AddAnimalListState extends State<AddAnimalList> {
   final TextEditingController idController = TextEditingController();
   String? selectedAnimalType;
@@ -102,7 +124,8 @@ class _AddAnimalListState extends State<AddAnimalList> {
   File? _image;
 
   Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
@@ -125,7 +148,10 @@ class _AddAnimalListState extends State<AddAnimalList> {
         leading: IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
-            child: Icon(Icons.arrow_back, color: Colors.black),
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -137,7 +163,7 @@ class _AddAnimalListState extends State<AddAnimalList> {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: DropdownButtonFormField<String>(
+                child: DropdownButtonFormField2<String>(
                   value: selectedAnimalType,
                   hint: const Text("Select Animal Type"),
                   onChanged: (value) {
@@ -153,7 +179,8 @@ class _AddAnimalListState extends State<AddAnimalList> {
                   }).toList(),
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                   ),
                 ),
               ),
@@ -161,7 +188,12 @@ class _AddAnimalListState extends State<AddAnimalList> {
               _buildTextField(idController, "Id"),
               const SizedBox(height: 10),
               _image != null
-                  ? Image.file(_image!, width: 100, height: 100, fit: BoxFit.cover)
+                  ? Image.file(
+                      _image!,
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                    )
                   : const Icon(Icons.image, size: 100),
               TextButton(
                 onPressed: _pickImage,
@@ -203,16 +235,23 @@ class _AddAnimalListState extends State<AddAnimalList> {
         decoration: InputDecoration(
           hintText: label,
           border: const OutlineInputBorder(),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         ),
       ),
     );
   }
 
   void _submitForm() {
-    if (idController.text.isEmpty || selectedAnimalType == null || _image == null) {
+    if (idController.text.isEmpty ||
+        selectedAnimalType == null ||
+        _image == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please fill all fields and upload an image")),
+        const SnackBar(
+          content: Text(
+            "Please fill all fields and upload an image",
+          ),
+        ),
       );
       return;
     }

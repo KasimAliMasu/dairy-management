@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 class AddVaccinationRegister extends StatefulWidget {
   const AddVaccinationRegister({super.key});
@@ -48,7 +49,7 @@ class _AddVaccinationRegisterState extends State<AddVaccinationRegister> {
               _buildTextField(vaccineCompanyController, "Vaccine Company"),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: DropdownButtonFormField<String>(
+                child: DropdownButtonFormField2<String>(
                   value: selectedVaccine,
                   hint: const Text("Select vaccine name"),
                   onChanged: (value) {

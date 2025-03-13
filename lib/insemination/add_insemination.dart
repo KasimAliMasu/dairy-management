@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 class AddInsemination extends StatefulWidget {
   const AddInsemination({super.key});
@@ -8,38 +9,38 @@ class AddInsemination extends StatefulWidget {
 }
 
 class _AddInseminationState extends State<AddInsemination> {
-  String? selectedAnimalType;
+  Map<String, String>? selectedAnimalType;
 
   final List<Map<String, String>> animalType = [
     {
       "name": "Cow1",
       "image":
-          "https://plus.unsplash.com/premium_photo-1668446123344-d7945fb07eaa?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8Y293fGVufDB8fDB8fHww",
+      "https://plus.unsplash.com/premium_photo-1668446123344-d7945fb07eaa?w=600&auto=format&fit=crop&q=60",
     },
     {
       "name": "Cow2",
       "image":
-          "https://plus.unsplash.com/premium_photo-1661963630252-31be8bc4f900?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mzd8fGJ1ZmZhbG98ZW58MHx8MHx8fDA%3D",
+      "https://plus.unsplash.com/premium_photo-1661963630252-31be8bc4f900?w=600&auto=format&fit=crop&q=60",
     },
     {
       "name": "Cow3",
       "image":
-      "https://images.unsplash.com/photo-1693150837688-e20ba2e12932?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y293JTIwaW1hZ2V8ZW58MHx8MHx8fDA%3D",
+      "https://images.unsplash.com/photo-1693150837688-e20ba2e12932?w=600&auto=format&fit=crop&q=60",
     },
     {
       "name": "Cow4",
       "image":
-      "https://plus.unsplash.com/premium_photo-1668446123157-d7c8659e3ff9?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fGNvdyUyMGltYWdlfGVufDB8fDB8fHww",
+      "https://plus.unsplash.com/premium_photo-1668446123157-d7c8659e3ff9?w=600&auto=format&fit=crop&q=60",
     },
     {
       "name": "Cow5",
       "image":
-      "https://images.unsplash.com/photo-1531299192269-7e6cfc8553bb?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGNvdyUyMGltYWdlfGVufDB8fDB8fHww",
+      "https://images.unsplash.com/photo-1531299192269-7e6cfc8553bb?w=600&auto=format&fit=crop&q=60",
     },
   ];
 
   final TextEditingController inseminationDateController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController semenCompanyController = TextEditingController();
   final TextEditingController bullNameController = TextEditingController();
   final TextEditingController tagNoController = TextEditingController();
@@ -69,12 +70,17 @@ class _AddInseminationState extends State<AddInsemination> {
           child: Column(
             children: [
               const SizedBox(height: 10),
-              DropdownButtonFormField<String>(
-                value: selectedAnimalType,
+              DropdownButtonFormField2<Map<String, String>>(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                   contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                ),
+                isExpanded: true,
                 hint: const Text("Select Animal Type"),
+                value: selectedAnimalType,
                 items: animalType.map((type) {
                   return DropdownMenuItem(
-                    value: type['name'],
+                    value: type,
                     child: Row(
                       children: [
                         CircleAvatar(
@@ -82,7 +88,7 @@ class _AddInseminationState extends State<AddInsemination> {
                           backgroundImage: NetworkImage(type['image']!),
                         ),
                         const SizedBox(width: 10),
-                        Text("${type['name']}")
+                        Text(type['name']!),
                       ],
                     ),
                   );
@@ -92,20 +98,25 @@ class _AddInseminationState extends State<AddInsemination> {
                     selectedAnimalType = value;
                   });
                 },
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                buttonStyleData: const ButtonStyleData(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                ),
+                dropdownStyleData: DropdownStyleData(
+                  maxHeight:double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
-              _buildTextField(
-                  inseminationDateController, "Artificial Insemination Date"),
+              _buildTextField(inseminationDateController, "Artificial Insemination Date"),
               _buildTextField(semenCompanyController, "Semen Company"),
               _buildTextField(bullNameController, "Bull Name"),
               _buildTextField(tagNoController, "Tag No"),
               _buildTextField(lactationNoController, "Lactation No"),
-              DropdownButtonFormField<String>(
+              const SizedBox(height: 10),
+              DropdownButtonFormField2<String>(
                 value: selectedMethod,
                 items: ["A.I.", "Not Pregnant"].map((method) {
                   return DropdownMenuItem(value: method, child: Text(method));
@@ -117,8 +128,7 @@ class _AddInseminationState extends State<AddInsemination> {
                 },
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                 ),
               ),
               const SizedBox(height: 20),
@@ -129,7 +139,8 @@ class _AddInseminationState extends State<AddInsemination> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                     padding: const EdgeInsets.symmetric(vertical: 15),
                   ),
                   child: const Text(
@@ -153,8 +164,7 @@ class _AddInseminationState extends State<AddInsemination> {
         decoration: InputDecoration(
           hintText: label,
           border: const OutlineInputBorder(),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         ),
       ),
     );
@@ -167,6 +177,6 @@ class _AddInseminationState extends State<AddInsemination> {
     print("Tag No: ${tagNoController.text}");
     print("Lactation No: ${lactationNoController.text}");
     print("Selected Method: $selectedMethod");
-    print("Selected Animal Type: $selectedAnimalType");
+    print("Selected Animal Type: ${selectedAnimalType?['name']}");
   }
 }

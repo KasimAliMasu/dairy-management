@@ -48,15 +48,11 @@ class AddCattle extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Add Cattle"),
         centerTitle: true,
-        backgroundColor: Colors.grey.shade100,
+        backgroundColor: Colors.blue,
         elevation: 0,
-        foregroundColor: Colors.black,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        foregroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(

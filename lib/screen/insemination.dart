@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:dropdown_button2/dropdown_button2.dart';
 import '../insemination/add_insemination.dart';
 
 class InseminationScreen extends StatefulWidget {
@@ -85,7 +85,7 @@ class _InseminationScreenState extends State<InseminationScreen> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
+                child: DropdownButton2<String>(
                   value: selectedType,
                   isExpanded: true,
                   items: ["All", "A.I.", "Not Pregnant"]

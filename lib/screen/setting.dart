@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import '../main.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -8,6 +11,60 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  String _selectedLanguage = 'English';
+
+  void _showLanguageDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(AppLocalizations.of(context)!.selectLanguage),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: const Text('English'),
+              onTap: () {
+                setState(() {
+                  _selectedLanguage = 'English';
+                });
+                Provider.of<LocaleProvider>(context, listen: false)
+                    .setLocale(const Locale('en'));
+                Navigator.of(context).pop();
+              },
+            ),
+            ListTile(
+              title: const Text('हिन्दी'),
+              onTap: () {
+                setState(() {
+                  _selectedLanguage = 'हिन्दी';
+                });
+                Provider.of<LocaleProvider>(context, listen: false)
+                    .setLocale(const Locale('hi'));
+                Navigator.of(context).pop();
+              },
+            ),
+            ListTile(
+              title: const Text('ગુજરાતી'),
+              onTap: () {
+                setState(() {
+                  _selectedLanguage = 'ગુજરાતી';
+                });
+                Provider.of<LocaleProvider>(context, listen: false)
+                    .setLocale(const Locale('gu'));
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text("close"),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,44 +72,37 @@ class _SettingScreenState extends State<SettingScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
-        ),
-        title: const Text(
-          "Setting",
-          style: TextStyle(color: Colors.white),
+        automaticallyImplyLeading: false,
+        title: Text(
+          AppLocalizations.of(context)!.setting,
+          style: const TextStyle(color: Colors.white),
         ),
         centerTitle: true,
       ),
       body: ListView(
         children: [
           ListTile(
-            title: const Text('Language'),
-            subtitle: const Text('English'),
+            title: Text(AppLocalizations.of(context)!.language),
+            subtitle: Text(_selectedLanguage),
             leading: const Icon(Icons.language),
-            onTap: () {},
+            onTap: _showLanguageDialog,
           ),
           const Divider(),
           ListTile(
-            title: const Text('LogOut'),
+            title: Text(AppLocalizations.of(context)!.logout),
             leading: const Icon(Icons.logout),
-            onTap: () {},
+            onTap: () {
+              // Add logout functionality
+            },
           ),
           const Divider(),
           ListTile(
-            title: const Text('Version'),
+            title: Text(AppLocalizations.of(context)!.version),
             subtitle: const Text('3.0'),
             leading: const Icon(Icons.info),
           ),
         ],
       ),
-
     );
   }
 }
