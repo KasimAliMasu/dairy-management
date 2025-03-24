@@ -223,5 +223,6 @@
     "registerNewCattle":"नये मवेशियों का पंजीकरण करें",
     "areYouSureYouWantToLogOut":"क्या आप लॉग आउट करना चाहते हैं?",
     "exitApp":"ऐप से बाहर निकलें",
-    "areYouSureYouWantToExit":"क्या आप निश्चित हैं आपकी बाहर निकलने की इच्छा है?"
+    "areYouSureYouWantToExit":"क्या आप निश्चित हैं आपकी बाहर निकलने की इच्छा है?",
+    "cowName":"गाय का नाम"
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FeedCalculator extends StatefulWidget {
@@ -10,10 +9,7 @@ class FeedCalculator extends StatefulWidget {
 }
 
 class _FeedCalculatorState extends State<FeedCalculator> {
-  String selectedWeight = "500";
-  String selectedMilkYield = "30";
   String selectedFeedType = "Silage";
-
 
   @override
   Widget build(BuildContext context) {
@@ -56,20 +52,29 @@ class _FeedCalculatorState extends State<FeedCalculator> {
               ),
               child: Column(
                 children: [
-                  _buildDropdownField(
-                      AppLocalizations.of(context)!.weight, selectedWeight, ["400", "500", "600"],
-                      (value) {
-                    setState(() {
-                      selectedWeight = value!;
-                    });
-                  }),
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    maxLength: 10,
+                    decoration: InputDecoration(
+                      counterText: "",
+                      labelText: AppLocalizations.of(context)!.weight,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 15),
-                  _buildDropdownField(   AppLocalizations.of(context)!.milkYield, selectedMilkYield,
-                      ["20", "30", "40"], (value) {
-                    setState(() {
-                      selectedMilkYield = value!;
-                    });
-                  }),
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    maxLength: 10,
+                    decoration: InputDecoration(
+                      counterText: "",
+                      labelText: AppLocalizations.of(context)!.milkYield,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   _buildRadioButtonRow(),
                   const SizedBox(height: 20),
@@ -118,57 +123,13 @@ class _FeedCalculatorState extends State<FeedCalculator> {
                   ),
                   const SizedBox(height: 10),
                   _buildSummaryCard(),
-                  const SizedBox(height: 200),
+                  const SizedBox(height: 270),
                 ],
               ),
             ),
           ],
         ),
       ),
-
-    );
-  }
-
-  Widget _buildDropdownField(String label, String selectedValue,
-      List<String> options, ValueChanged<String?> onChanged) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            color: Colors.grey,
-            fontSize: 14,
-          ),
-        ),
-        const SizedBox(height: 5),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: DropdownButtonFormField2<String>(
-            value: selectedValue,
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-            ),
-            items: options.map((option) {
-              return DropdownMenuItem<String>(
-                value: option,
-                child: Text(
-                  option,
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-              );
-            }).toList(),
-            onChanged: onChanged,
-          ),
-        ),
-      ],
     );
   }
 
@@ -228,7 +189,8 @@ class _FeedCalculatorState extends State<FeedCalculator> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 10),
-          _buildSummaryItem(AppLocalizations.of(context)!.concentratedFeed, "10kg/day"),
+          _buildSummaryItem(
+              AppLocalizations.of(context)!.concentratedFeed, "10kg/day"),
           _buildSummaryItem(AppLocalizations.of(context)!.silage, "29kg/day"),
         ],
       ),

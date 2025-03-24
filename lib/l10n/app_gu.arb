@@ -223,6 +223,8 @@
     "registerNewCattle":"નવા પશુઓની નોંધણી કરો",
     "areYouSureYouWantToLogOut":"શું તમે ખરેખર લોગઆઉટ કરવા માંગો છો?",
     "exitApp":"એપ્લિકેશનમાંથી બહાર નીકળો",
-    "areYouSureYouWantToExit":"શું તમે ખરેખર બહાર નીકળવા માંગો છો?"
+    "areYouSureYouWantToExit":"શું તમે ખરેખર બહાર નીકળવા માંગો છો?",
+    "cowName":""
+
 
 }

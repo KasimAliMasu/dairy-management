@@ -223,7 +223,8 @@
 "registerNewCattle":"Register New Cattle",
 "areYouSureYouWantToLogOut":"Are you sure you want to logOut?",
 "exitApp":"Exit App",
-"areYouSureYouWantToExit":"Are you sure you want to exit?"
+"areYouSureYouWantToExit":"Are you sure you want to exit?",
+"cowName":"Cow Name"
 
 
 }

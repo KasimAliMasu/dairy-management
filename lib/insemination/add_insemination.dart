@@ -20,7 +20,7 @@ class _AddInseminationState extends State<AddInsemination> {
   @override
   void initState() {
     super.initState();
-    selectedMethod = ""; // Set default empty to avoid null issues
+    selectedMethod = "";
   }
 
   @override
@@ -30,6 +30,16 @@ class _AddInseminationState extends State<AddInsemination> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
+        leading: IconButton(
+          icon: const CircleAvatar(
+            backgroundColor: Colors.white,
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Text(localizations.addInsemination, style: const TextStyle(color: Colors.white)),
       ),
       body: Padding(

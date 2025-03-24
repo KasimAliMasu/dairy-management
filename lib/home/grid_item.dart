@@ -10,8 +10,9 @@ import '../feed_formula/dry_cow_feed_formula.dart';
 import '../screen/heat_register.dart';
 import '../screen/insemination.dart';
 import '../screen/milk_ltr.dart';
-import '../vaccination/Vaccination_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../vaccination/vaccination.dart';
 
 class GridItem extends StatelessWidget {
   final String title;

@@ -32,39 +32,31 @@ class _CalfRegisterState extends State<CalfRegister> {
         leading: IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
-            child: Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
+            child: Icon(Icons.arrow_back, color: Colors.black),
           ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: calves.isEmpty
-          ? Center(
-        child: Text(localizations.noRecordsFound),
-      )
+          ? Center(child: Text(localizations.noRecordsFound))
           : ListView.builder(
         itemCount: calves.length,
         itemBuilder: (context, index) {
           return Card(
             margin: const EdgeInsets.all(8.0),
             child: ListTile(
-              title: Text(
-                "${localizations.cattleId}: ${calves[index][localizations.cattleId]}",
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(calves[index]['selectedAnimalImage']!),
+                radius: 25,
               ),
+              title: Text("${localizations.cattleId}: ${calves[index]['cattleId']}"),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "${localizations.birthDate}: ${calves[index][localizations.birthDate]}",
-                  ),
-                  Text(
-                    "${localizations.father}: ${calves[index][localizations.father]}",
-                  ),
-                  Text(
-                    "${localizations.mother}: ${calves[index][localizations.mother]}",
-                  ),
+                  Text("${localizations.birthDate}: ${calves[index]['birthDate']}"),
+                  Text("${localizations.father}: ${calves[index]['fatherName']}"),
+                  Text("${localizations.mother}: ${calves[index]['motherName']}"),
+                  Text("${localizations.cowName}: ${calves[index]['selectedAnimal']}"),
                 ],
               ),
             ),
@@ -87,10 +79,7 @@ class _CalfRegisterState extends State<CalfRegister> {
             _addCalf(newCalf);
           }
         },
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
