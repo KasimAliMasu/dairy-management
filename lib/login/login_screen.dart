@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../home/Bottom_bar.dart';
 import 'forgot_password_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -87,8 +88,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       Center(
                         child: Text(
                           _showFields
-                              ? (_isRegistered ? "Login" : "Register")
-                              : "Enter Phone Number",
+                              ? (_isRegistered
+                                  ? AppLocalizations.of(context)!.login
+                                  : AppLocalizations.of(context)!.register)
+                              : AppLocalizations.of(context)!.enterPhoneNumber,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 22,
@@ -103,17 +106,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         maxLength: 10,
                         decoration: InputDecoration(
                           counterText: "",
-                          labelText: "Phone Number",
+                          labelText: AppLocalizations.of(context)!.phoneNumber,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your phone number';
+                            return AppLocalizations.of(context)!
+                                .pleaseEnteryourPhoneNumber;
                           }
                           if (value.length != 10) {
-                            return 'Enter a valid 10-digit phone number';
+                            return AppLocalizations.of(context)!
+                                .enterAValid10DigitPhoneNumber;
                           }
                           return null;
                         },
@@ -135,8 +140,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             onPressed:
                                 _isPhoneValid ? _submitPhoneNumber : null,
-                            child: const Text(
-                              "Submit",
+                            child: Text(
+                              AppLocalizations.of(context)!.submit,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
@@ -150,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _passwordController,
                           obscureText: !_isPasswordVisible,
                           decoration: InputDecoration(
-                            labelText: "Password",
+                            labelText: AppLocalizations.of(context)!.password,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -169,10 +174,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your password';
+                              return AppLocalizations.of(context)!
+                                  .pleaseEnterYourPassword;
                             }
                             if (value.length < 6) {
-                              return 'Password must be at least 6 characters long';
+                              return AppLocalizations.of(context)!
+                                  .passwordMustBeAtLeast6CharactersLong;
                             }
                             return null;
                           },
@@ -184,7 +191,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _confirmPasswordController,
                           obscureText: !_isConfirmPasswordVisible,
                           decoration: InputDecoration(
-                            labelText: "Confirm Password",
+                            labelText:
+                                AppLocalizations.of(context)!.confirmPassword,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -204,10 +212,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please confirm your password';
+                              return AppLocalizations.of(context)!
+                                  .pleaseConfirmYourPassword;
                             }
                             if (value != _passwordController.text) {
-                              return 'Passwords do not match';
+                              return AppLocalizations.of(context)!
+                                  .passwordsDoNotMatch;
                             }
                             return null;
                           },
@@ -221,13 +231,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: _loginOrRegister,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
-                              padding: const EdgeInsets.symmetric(vertical: 15,),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 15,
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
                               ),
                             ),
                             child: Text(
-                              _isRegistered ? "Login" : "Register",
+                              _isRegistered
+                                  ? AppLocalizations.of(context)!.login
+                                  : AppLocalizations.of(context)!.register,
                               style: const TextStyle(
                                 fontSize: 18,
                                 color: Colors.white,
@@ -237,16 +251,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                       TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const ForgotPasswordScreen(),
-                              ),
-                            );
-                          },
-                          child: Text("Forgot"))
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const ForgotPasswordScreen(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          AppLocalizations.of(context)!.forgot,
+                        ),
+                      ),
                     ],
                   ),
                 ),

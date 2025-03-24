@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'vaccination.dart';
 
 class VaccinationRegister extends StatefulWidget {
@@ -22,9 +22,9 @@ class _VaccinationRegisterState extends State<VaccinationRegister> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Vaccination",
-          style: TextStyle(color: Colors.white),
+        title: Text(
+          AppLocalizations.of(context)!.vaccination,
+          style: const TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.blue,
         leading: IconButton(
@@ -36,7 +36,7 @@ class _VaccinationRegisterState extends State<VaccinationRegister> {
         ),
       ),
       body: vaccinations.isEmpty
-          ? const Center(child: Text("No records found"))
+          ?   Center(child: Text(AppLocalizations.of(context)!.noRecordsFound))
           : ListView.builder(
         itemCount: vaccinations.length,
         itemBuilder: (context, index) {

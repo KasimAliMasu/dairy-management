@@ -1,36 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ConcentratedFeedComposition extends StatelessWidget {
   ConcentratedFeedComposition({super.key});
-  final List<Map<String, String>> feedComposition = [
-    {"name": "Maize", "quantity": "36Kg"},
-    {"name": "Mustard doc", "quantity": "12Kg"},
-    {"name": "Cotton seed", "quantity": "14Kg"},
-    {"name": "Soya doc", "quantity": "17Kg"},
-    {"name": "Groundnut doc", "quantity": "5Kg"},
-    {"name": "Wheat bran", "quantity": "10Kg"},
-    {"name": "Molasses", "quantity": "2Kg"},
-    {"name": "Salt", "quantity": "1Kg"},
-    {"name": "MCP(Mono Calcium\n Phosphate)", "quantity": "0.3Kg"},
-    {"name": "CP(Calcium Phosphate)", "quantity": "1Kg"},
-    {"name": "Toxin binder", "quantity": "200 gram"},
-    {"name": "Mineral mixture", "quantity": "600 gram"},
-    {"name": "Baking Soda(Sodium \nbicarbonate)", "quantity": "700 gram"},
-    {"name": "MGO(Megnesium Oxide)", "quantity": "200 gram"},
-  ];
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
+    final List<Map<String, String>> feedComposition = [
+      {"name": localizations.maize, "quantity": localizations.quantityKg(36)},
+      {"name": localizations.mustardDoc, "quantity": localizations.quantityKg(12)},
+      {"name": localizations.cottonSeed, "quantity": localizations.quantityKg(14)},
+      {"name": localizations.soyaDoc, "quantity": localizations.quantityKg(17)},
+      {"name": localizations.groundnutDoc, "quantity": localizations.quantityKg(5)},
+      {"name": localizations.wheatBran, "quantity": localizations.quantityKg(10)},
+      {"name": localizations.molasses, "quantity": localizations.quantityKg(2)},
+      {"name": localizations.salt, "quantity": localizations.quantityKg(1)},
+      {"name": localizations.mcp, "quantity": localizations.quantityKg(0.3)},
+      {"name": localizations.cp, "quantity": localizations.quantityKg(1)},
+      {"name": localizations.toxinBinder, "quantity": localizations.quantityGram(200)},
+      {"name": localizations.mineralMixture, "quantity": localizations.quantityGram(600)},
+      {"name": localizations.bakingSoda, "quantity": localizations.quantityGram(700)},
+      {"name": localizations.mgo, "quantity": localizations.quantityGram(200)},
+    ];
+
     return Scaffold(
       backgroundColor: Colors.blue,
       appBar: AppBar(
-        title: const Text(
-          "Concentrated Feed Composition",
-        ),
+        title: Text(localizations.concentratedFeedComposition),
         leading: IconButton(
-          icon: CircleAvatar(
+          icon: const CircleAvatar(
             backgroundColor: Colors.white,
-            child: const Icon(
+            child: Icon(
               Icons.arrow_back,
               color: Colors.black,
             ),
@@ -54,64 +56,43 @@ class ConcentratedFeedComposition extends StatelessWidget {
                   topRight: Radius.circular(40),
                 ),
               ),
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.all(16),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade100,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Text(
-                      "Notes: This feed is used 2 months before calving.\nDaily 4 to 5 kg",
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: ListView.builder(
-                        itemCount: feedComposition.length,
-                        itemBuilder: (context, index) {
-                          final item = feedComposition[index];
-                          return Column(
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      item["name"]!,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    Text(
-                                      item["quantity"]!,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
+              child: Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: ListView.builder(
+                    itemCount: feedComposition.length,
+                    itemBuilder: (context, index) {
+                      final item = feedComposition[index];
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  item["name"]!,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                  ),
                                 ),
-                              ),
-                              if (index < feedComposition.length - 1)
-                                const Divider(color: Colors.grey),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
+                                Text(
+                                  item["quantity"]!,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (index < feedComposition.length - 1)
+                            const Divider(color: Colors.grey),
+                        ],
+                      );
+                    },
                   ),
-                ],
+                ),
               ),
             ),
           ),

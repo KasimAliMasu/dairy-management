@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import '../insemination/add_insemination.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InseminationScreen extends StatefulWidget {
   const InseminationScreen({super.key});
@@ -10,7 +11,7 @@ class InseminationScreen extends StatefulWidget {
 }
 
 class _InseminationScreenState extends State<InseminationScreen> {
-  String selectedType = "All";
+  String? selectedType; // Change to nullable for better handling
 
   final List<Map<String, String>> cattleData = [
     {
@@ -41,36 +42,41 @@ class _InseminationScreenState extends State<InseminationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
+    // Define dropdown values using localization
+    final dropdownValues = [
+      localizations.all,
+      localizations.ai,
+      localizations.notPregnant,
+    ];
+
+    // Ensure selectedType is correctly set
+    selectedType ??= dropdownValues.first; // Set default if null
+
     List<Map<String, String>> filteredData = cattleData.where((item) {
-      if (selectedType == "All") return true;
+      if (selectedType == localizations.all) return true;
       return item["PregnancyStatus"] == selectedType;
     }).toList();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Insemination",
-          style: TextStyle(
-            color: Colors.white,
-          ),
+          localizations.insemination,
+          style: const TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.blue,
         leading: IconButton(
-          icon: CircleAvatar(
+          icon: const CircleAvatar(
             backgroundColor: Colors.white,
-            child: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
+            child: Icon(Icons.arrow_back, color: Colors.black),
           ),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           IconButton(
             onPressed: () {},
-            icon: Icon(
-              Icons.search,
-              color: Colors.white,
-            ),
+            icon: const Icon(Icons.search, color: Colors.white),
           ),
         ],
       ),
@@ -78,8 +84,9 @@ class _InseminationScreenState extends State<InseminationScreen> {
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
+            // Dropdown for Pregnancy Status
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.0),
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(8),
@@ -88,11 +95,11 @@ class _InseminationScreenState extends State<InseminationScreen> {
                 child: DropdownButton2<String>(
                   value: selectedType,
                   isExpanded: true,
-                  items: ["All", "A.I.", "Not Pregnant"]
+                  items: dropdownValues
                       .map((e) => DropdownMenuItem(
-                            value: e,
-                            child: Text(e),
-                          ))
+                    value: e,
+                    child: Text(e),
+                  ))
                       .toList(),
                   onChanged: (value) {
                     setState(() {
@@ -102,7 +109,8 @@ class _InseminationScreenState extends State<InseminationScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
+            // List of cattle data
             Expanded(
               child: ListView.builder(
                 itemCount: filteredData.length,
@@ -123,17 +131,16 @@ class _InseminationScreenState extends State<InseminationScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AddInsemination(),
-            ),);
+              builder: (context) => const AddInsemination(),
+            ),
+          );
         },
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
 }
+
 
 class CattleCard extends StatelessWidget {
   final Map<String, String> data;
@@ -141,6 +148,7 @@ class CattleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
@@ -163,7 +171,7 @@ class CattleCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Cattle Id/Name",
+                      localizations.cattleId,
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,

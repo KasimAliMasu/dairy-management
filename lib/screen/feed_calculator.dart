@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FeedCalculator extends StatefulWidget {
   const FeedCalculator({super.key});
@@ -31,8 +32,8 @@ class _FeedCalculatorState extends State<FeedCalculator> {
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          "Feed Calculator",
+        title: Text(
+          AppLocalizations.of(context)!.feedCal,
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -56,14 +57,14 @@ class _FeedCalculatorState extends State<FeedCalculator> {
               child: Column(
                 children: [
                   _buildDropdownField(
-                      "Weight(kg)", selectedWeight, ["400", "500", "600"],
+                      AppLocalizations.of(context)!.weight, selectedWeight, ["400", "500", "600"],
                       (value) {
                     setState(() {
                       selectedWeight = value!;
                     });
                   }),
                   const SizedBox(height: 15),
-                  _buildDropdownField("Milk Yield(ltr/day)", selectedMilkYield,
+                  _buildDropdownField(   AppLocalizations.of(context)!.milkYield, selectedMilkYield,
                       ["20", "30", "40"], (value) {
                     setState(() {
                       selectedMilkYield = value!;
@@ -85,18 +86,18 @@ class _FeedCalculatorState extends State<FeedCalculator> {
                         horizontal: 100,
                       ),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.calculate,
                           size: 20,
                           color: Colors.white,
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text(
-                          "Calculate",
-                          style: TextStyle(
+                          AppLocalizations.of(context)!.calculate,
+                          style: const TextStyle(
                             fontSize: 16,
                           ),
                         ),
@@ -106,9 +107,9 @@ class _FeedCalculatorState extends State<FeedCalculator> {
                   const SizedBox(height: 20),
                   Row(
                     children: [
-                      const Text(
-                        "Summary",
-                        style: TextStyle(
+                      Text(
+                        AppLocalizations.of(context)!.summary,
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -175,11 +176,11 @@ class _FeedCalculatorState extends State<FeedCalculator> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildRadioButton("Green"),
+        _buildRadioButton(AppLocalizations.of(context)!.green),
         const SizedBox(width: 10),
-        _buildRadioButton("Silage"),
+        _buildRadioButton(AppLocalizations.of(context)!.silage),
         const SizedBox(width: 10),
-        _buildRadioButton("Both"),
+        _buildRadioButton(AppLocalizations.of(context)!.both),
       ],
     );
   }
@@ -227,8 +228,8 @@ class _FeedCalculatorState extends State<FeedCalculator> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 10),
-          _buildSummaryItem("Concentrated\n Feed", "10kg/day"),
-          _buildSummaryItem("Silage", "29kg/day"),
+          _buildSummaryItem(AppLocalizations.of(context)!.concentratedFeed, "10kg/day"),
+          _buildSummaryItem(AppLocalizations.of(context)!.silage, "29kg/day"),
         ],
       ),
     );

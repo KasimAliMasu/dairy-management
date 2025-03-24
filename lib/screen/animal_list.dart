@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AnimalList extends StatefulWidget {
   const AnimalList({super.key});
@@ -60,8 +61,8 @@ class _AnimalListState extends State<AnimalList> {
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          "Animal",
+        title: Text(
+          AppLocalizations.of(context)!.animal,
           style: TextStyle(
             color: Colors.white,
           ),
@@ -69,7 +70,10 @@ class _AnimalListState extends State<AnimalList> {
         backgroundColor: Colors.blue,
       ),
       body: animalList.isEmpty
-          ? const Center(child: Text("No records found"))
+          ? Center(
+              child: Text(
+              AppLocalizations.of(context)!.noRecordsFound,
+            ))
           : ListView.builder(
               itemCount: animalList.length,
               itemBuilder: (context, index) {
@@ -120,12 +124,11 @@ class AddAnimalList extends StatefulWidget {
 class _AddAnimalListState extends State<AddAnimalList> {
   final TextEditingController idController = TextEditingController();
   String? selectedAnimalType;
-  final List<String> animalTypes = ["Cow", "Buffalo"];
   File? _image;
 
   Future<void> _pickImage() async {
     final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
@@ -135,13 +138,21 @@ class _AddAnimalListState extends State<AddAnimalList> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
+    /// **Now defining the list inside the build method**
+    final List<String> animalTypes = [
+      localizations.cow,
+      localizations.buffalo,
+    ];
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: const Text(
-          "Add Animal",
-          style: TextStyle(
+        title: Text(
+          localizations.addAnimal,
+          style: const TextStyle(
             color: Colors.white,
           ),
         ),
@@ -165,7 +176,7 @@ class _AddAnimalListState extends State<AddAnimalList> {
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: DropdownButtonFormField2<String>(
                   value: selectedAnimalType,
-                  hint: const Text("Select Animal Type"),
+                  hint: Text(localizations.selectAnimalType),
                   onChanged: (value) {
                     setState(() {
                       selectedAnimalType = value;
@@ -180,24 +191,24 @@ class _AddAnimalListState extends State<AddAnimalList> {
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     contentPadding:
-                        EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                    EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                   ),
                 ),
               ),
               const SizedBox(height: 10),
-              _buildTextField(idController, "Id"),
+              _buildTextField(idController, localizations.id),
               const SizedBox(height: 10),
               _image != null
                   ? Image.file(
-                      _image!,
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                    )
+                _image!,
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+              )
                   : const Icon(Icons.image, size: 100),
               TextButton(
                 onPressed: _pickImage,
-                child: const Text("Upload Image"),
+                child: Text(localizations.uploadImage),
               ),
               const SizedBox(height: 10),
               SizedBox(
@@ -211,9 +222,9 @@ class _AddAnimalListState extends State<AddAnimalList> {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 15),
                   ),
-                  child: const Text(
-                    "Submit",
-                    style: TextStyle(
+                  child: Text(
+                    localizations.submit,
+                    style: const TextStyle(
                       fontSize: 18,
                       color: Colors.white,
                     ),
@@ -236,20 +247,22 @@ class _AddAnimalListState extends State<AddAnimalList> {
           hintText: label,
           border: const OutlineInputBorder(),
           contentPadding:
-              const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         ),
       ),
     );
   }
 
   void _submitForm() {
+    final localizations = AppLocalizations.of(context)!;
+
     if (idController.text.isEmpty ||
         selectedAnimalType == null ||
         _image == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-            "Please fill all fields and upload an image",
+            localizations.pleaseFillAllFields,
           ),
         ),
       );

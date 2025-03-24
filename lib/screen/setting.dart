@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import '../login/login_screen.dart';
 import '../main.dart';
+
+
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -12,6 +15,34 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   String _selectedLanguage = 'English';
+  void signOut() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(AppLocalizations.of(context)!.logout),
+        content:  Text(
+          AppLocalizations.of(context)!.areYouSureYouWantToLogOut,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
+            },
+            child: const Text("Logout"),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   void _showLanguageDialog() {
     showDialog(
@@ -92,8 +123,9 @@ class _SettingScreenState extends State<SettingScreen> {
             title: Text(AppLocalizations.of(context)!.logout),
             leading: const Icon(Icons.logout),
             onTap: () {
-              // Add logout functionality
+              signOut();
             },
+
           ),
           const Divider(),
           ListTile(

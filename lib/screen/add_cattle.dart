@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class AddCattle extends StatelessWidget {
   const AddCattle({super.key});
@@ -46,7 +48,7 @@ class AddCattle extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text("Add Cattle"),
+        title:  Text(AppLocalizations.of(context)!.addCattle),
         centerTitle: true,
         backgroundColor: Colors.blue,
         elevation: 0,
@@ -70,9 +72,9 @@ class AddCattle extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const TextField(
+              child:  TextField(
                 decoration: InputDecoration(
-                  hintText: "Search",
+                  hintText:AppLocalizations.of(context)!.search,
                   border: InputBorder.none,
                   prefixIcon: Icon(
                     Icons.search,
@@ -86,8 +88,8 @@ class AddCattle extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
-              "Registered Cattles",
+              Text(
+             AppLocalizations.of(context)!.registeredCattles,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -124,8 +126,8 @@ class AddCattle extends StatelessWidget {
                   Icons.add,
                   color: Colors.white,
                 ),
-                label: const Text(
-                  "Register New Cattle",
+                label:  Text(
+                  AppLocalizations.of(context)!.registerNewCattle,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,

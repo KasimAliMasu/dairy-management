@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       ),
       locale: provider.locale,
       supportedLocales: L10n.all,
-      localizationsDelegates: const [
+      localizationsDelegates:  [
         AppLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

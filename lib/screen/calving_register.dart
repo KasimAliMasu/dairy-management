@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalvingRegister extends StatefulWidget {
   const CalvingRegister({super.key});
@@ -18,16 +19,12 @@ class _CalvingRegisterState extends State<CalvingRegister> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: const Text(
-          "Add Calving Record",
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-        leading: IconButton(
+        leading:  IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
             child: Icon(
@@ -37,62 +34,51 @@ class _CalvingRegisterState extends State<CalvingRegister> {
           ),
           onPressed: () => Navigator.pop(context),
         ),
+        title: Text(
+          locale.add_calving_record,
+          style: const TextStyle(color: Colors.white),
+        ),
       ),
       body: calves.isEmpty
-          ? const Center(
-              child: Text("No records found"),
-            )
+          ? Center(child: Text(locale.noRecordsFound))
           : ListView.builder(
-              itemCount: calves.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  margin: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    title: Text(
-                      "Cattle ID: ${calves[index]['cattleId']}",
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Calving Date: ${calves[index]['calvingDate']}",
-                        ),
-                        Text(
-                          "Lactation No: ${calves[index]['lactationNo']}",
-                        ),
-                        Text(
-                          "Calf Gender: ${calves[index]['calfGender']}",
-                        ),
-                        Text(
-                          "Calf Name: ${calves[index]['calfName']}",
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
+        itemCount: calves.length,
+        itemBuilder: (context, index) {
+          return Card(
+            margin: const EdgeInsets.all(8.0),
+            child: ListTile(
+              title: Text("${locale.cattleId}: ${calves[index]['cattleId']}"),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("${locale.calvingDate}: ${calves[index]['calvingDate']}"),
+                  Text("${locale.lactationNo}: ${calves[index]['lactationNo']}"),
+                  Text("${locale.calf_gender}: ${calves[index]['calfGender']}"),
+                  Text("${locale.calf_name}: ${calves[index]['calfName']}"),
+                ],
+              ),
             ),
+          );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () async {
           final newCalf = await Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const AddCalvingRegister(),
-            ),
+            MaterialPageRoute(builder: (context) => const AddCalvingRegister()),
           );
           if (newCalf != null) {
             _addCalf(newCalf);
           }
         },
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
 }
+
+
 
 class AddCalvingRegister extends StatefulWidget {
   const AddCalvingRegister({super.key});
@@ -110,16 +96,12 @@ class _AddCalvingRegisterState extends State<AddCalvingRegister> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: const Text(
-          "Add Calving Record",
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-        leading: IconButton(
+       leading:  IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
             child: Icon(
@@ -129,50 +111,30 @@ class _AddCalvingRegisterState extends State<AddCalvingRegister> {
           ),
           onPressed: () => Navigator.pop(context),
         ),
+        title: Text(
+          locale.add_calving_record,
+          style: const TextStyle(color: Colors.white),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _buildTextField(
-                cattleIdController,
-                "Cattle Id/Name",
-              ),
-              _buildTextField(
-                calvingDateController,
-                "Calving Date",
-              ),
-              _buildTextField(
-                lactationNoController,
-                "Lactation No",
-              ),
-              _buildGenderSelection(),
-              _buildTextField(
-                calfNameController,
-                "Calf Name",
-              ),
+              _buildTextField(cattleIdController, locale.cattleId),
+              _buildTextField(calvingDateController, locale.calvingDate),
+              _buildTextField(lactationNoController, locale.lactationNo),
+              _buildGenderSelection(locale),
+              _buildTextField(calfNameController, locale.calf_name),
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _submitForm,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 15,
-                    ),
                   ),
-                  child: const Text(
-                    "Submit",
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                  ),
+                  onPressed: _submitForm,
+                  child: Text(locale.submit,style: TextStyle(color: Colors.white,),),
                 ),
               ),
             ],
@@ -184,31 +146,25 @@ class _AddCalvingRegisterState extends State<AddCalvingRegister> {
 
   Widget _buildTextField(TextEditingController controller, String label) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 8.0,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
           hintText: label,
           border: const OutlineInputBorder(),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 15,
-          ),
         ),
       ),
     );
   }
 
-  Widget _buildGenderSelection() {
+  Widget _buildGenderSelection(AppLocalizations locale) {
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Align(
             alignment: Alignment.centerLeft,
-            child: const Text("Calf Gender: "),
+            child: Text(locale.calf_gender),
           ),
         ),
         Row(
@@ -222,7 +178,7 @@ class _AddCalvingRegisterState extends State<AddCalvingRegister> {
                 });
               },
             ),
-            const Text("Male"),
+            Text(locale.male),
             Radio(
               value: "Female",
               groupValue: calfGender,
@@ -232,7 +188,7 @@ class _AddCalvingRegisterState extends State<AddCalvingRegister> {
                 });
               },
             ),
-            const Text("Female"),
+            Text(locale.female),
           ],
         ),
       ],
@@ -240,14 +196,18 @@ class _AddCalvingRegisterState extends State<AddCalvingRegister> {
   }
 
   void _submitForm() {
+    final locale = AppLocalizations.of(context)!;
+
     if (cattleIdController.text.isEmpty ||
         calvingDateController.text.isEmpty ||
         lactationNoController.text.isEmpty ||
         calfNameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please fill all fields")));
+        SnackBar(content: Text(locale.pleaseFillAllFields)),
+      );
       return;
     }
+
     Map<String, String> newCalf = {
       "cattleId": cattleIdController.text,
       "calvingDate": calvingDateController.text,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MilkingDetailsScreen extends StatefulWidget {
   const MilkingDetailsScreen({super.key});
@@ -9,36 +10,35 @@ class MilkingDetailsScreen extends StatefulWidget {
 
 class _MilkingDetailsScreenState extends State<MilkingDetailsScreen> {
   int selectedTimeFilter = 0;
-  final List<String> timeFilters = [
-    "This Week",
-    "This Month",
-    "This Quarter",
-    "This Location"
-  ];
 
   @override
   Widget build(BuildContext context) {
+    // ✅ Move `timeFilters` inside `build`
+    final List<String> timeFilters = [
+      AppLocalizations.of(context)!.thisWeek,  // ✅ Uses localized string
+      AppLocalizations.of(context)!.thisMonth,
+      AppLocalizations.of(context)!.thisQuarter,
+      AppLocalizations.of(context)!.thisLocation
+    ];
+
     return Scaffold(
       backgroundColor: Colors.blue,
       appBar: AppBar(
-        title: const Text("Milking Details"),
+        title: Text(AppLocalizations.of(context)!.milkingDetails),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: CircleAvatar(
+          icon: const CircleAvatar(
             backgroundColor: Colors.white,
-            child: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
+            child: Icon(Icons.arrow_back, color: Colors.black),
           ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: Column(
         children: [
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Expanded(
             child: Container(
               width: double.infinity,
@@ -60,7 +60,7 @@ class _MilkingDetailsScreenState extends State<MilkingDetailsScreen> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
+                        boxShadow: const [
                           BoxShadow(
                             color: Colors.black12,
                             blurRadius: 6,
@@ -70,7 +70,7 @@ class _MilkingDetailsScreenState extends State<MilkingDetailsScreen> {
                       ),
                       child: Row(
                         children: [
-                          CircleAvatar(
+                          const CircleAvatar(
                             radius: 30,
                             backgroundImage: NetworkImage(
                               'https://img.freepik.com/premium-photo/cows-field_1048944-6262755.jpg',
@@ -81,9 +81,9 @@ class _MilkingDetailsScreenState extends State<MilkingDetailsScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  "Cattle Code",
-                                  style: TextStyle(color: Colors.grey),
+                                Text(
+                                  AppLocalizations.of(context)!.cattleCode, // ✅ Localized
+                                  style: const TextStyle(color: Colors.grey),
                                 ),
                                 const Text(
                                   "CTLID",
@@ -107,7 +107,7 @@ class _MilkingDetailsScreenState extends State<MilkingDetailsScreen> {
                             child: const Text(
                               "12943",
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
+                              TextStyle(color: Colors.white, fontSize: 16),
                             ),
                           ),
                         ],
@@ -126,14 +126,14 @@ class _MilkingDetailsScreenState extends State<MilkingDetailsScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: List.generate(2, (index) {
-                              return _buildFilterButton(index);
+                              return _buildFilterButton(timeFilters, index);
                             }),
                           ),
                           const SizedBox(height: 8),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: List.generate(2, (index) {
-                              return _buildFilterButton(index + 2);
+                              return _buildFilterButton(timeFilters, index + 2);
                             }),
                           ),
                         ],
@@ -162,7 +162,7 @@ class _MilkingDetailsScreenState extends State<MilkingDetailsScreen> {
                             ),
                           ),
                           const Text(
-                            "12 Jan - 18 Jan",
+                            "12 january - 18 january",
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -170,7 +170,7 @@ class _MilkingDetailsScreenState extends State<MilkingDetailsScreen> {
                           ),
                           IconButton(
                             onPressed: () {},
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.arrow_drop_down,
                               color: Colors.blue,
                             ),
@@ -185,7 +185,7 @@ class _MilkingDetailsScreenState extends State<MilkingDetailsScreen> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
+                        boxShadow: const [
                           BoxShadow(
                             color: Colors.black12,
                             blurRadius: 6,
@@ -207,11 +207,11 @@ class _MilkingDetailsScreenState extends State<MilkingDetailsScreen> {
                                 child: Container(
                                   width: MediaQuery.of(context).size.width,
                                   padding:
-                                      const EdgeInsets.symmetric(vertical: 8),
+                                  const EdgeInsets.symmetric(vertical: 8),
                                   color: Colors.blue,
-                                  child: const Center(
+                                  child:   Center(
                                     child: Text(
-                                      "Total Milk Production",
+                                     AppLocalizations.of(context)!.totalMilkProduction,
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 15,
@@ -224,8 +224,8 @@ class _MilkingDetailsScreenState extends State<MilkingDetailsScreen> {
                             ],
                           ),
                           const SizedBox(height: 10),
-                          const Text(
-                            "1800L",
+                            Text(
+                          AppLocalizations.of(context)!.liters,
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -246,7 +246,7 @@ class _MilkingDetailsScreenState extends State<MilkingDetailsScreen> {
     );
   }
 
-  Widget _buildFilterButton(int index) {
+  Widget _buildFilterButton(List<String> filters, int index) {
     return Expanded(
       child: GestureDetector(
         onTap: () {
@@ -264,7 +264,7 @@ class _MilkingDetailsScreenState extends State<MilkingDetailsScreen> {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
-            timeFilters[index],
+            filters[index],
             textAlign: TextAlign.center,
             style: TextStyle(
               color: selectedTimeFilter == index ? Colors.white : Colors.black,

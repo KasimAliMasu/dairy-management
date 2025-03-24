@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddCalf extends StatefulWidget {
   const AddCalf({super.key});
@@ -15,15 +16,15 @@ class _AddCalfState extends State<AddCalf> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: const Text(
-          "Add Calf Register",
-          style: TextStyle(
-            color: Colors.white,
-          ),
+        title: Text(
+          localizations.addCalfRegister,
+          style: const TextStyle(color: Colors.white),
         ),
         leading: IconButton(
           icon: const CircleAvatar(
@@ -41,10 +42,10 @@ class _AddCalfState extends State<AddCalf> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _buildTextField(cattleIdController, "Cattle Id/Name"),
-              _buildTextField(birthDateController, "Birth Date"),
-              _buildTextField(fatherNameController, "Father Name"),
-              _buildTextField(motherNameController, "Mother Name"),
+              _buildTextField(cattleIdController, localizations.cattleId),
+              _buildTextField(birthDateController, localizations.birthDate),
+              _buildTextField(fatherNameController, localizations.fatherName),
+              _buildTextField(motherNameController, localizations.motherName),
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
@@ -57,12 +58,9 @@ class _AddCalfState extends State<AddCalf> {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 15),
                   ),
-                  child: const Text(
-                    "Submit",
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
+                  child: Text(
+                    localizations.submit,
+                    style: const TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),
               ),
@@ -81,23 +79,25 @@ class _AddCalfState extends State<AddCalf> {
         decoration: InputDecoration(
           hintText: label,
           border: const OutlineInputBorder(),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         ),
       ),
     );
   }
 
   void _submitForm() {
+    final localizations = AppLocalizations.of(context)!;
+
     if (cattleIdController.text.isEmpty ||
         birthDateController.text.isEmpty ||
         fatherNameController.text.isEmpty ||
         motherNameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please fill all fields")),
+        SnackBar(content: Text(localizations.pleaseFillAllFields)),
       );
       return;
     }
+
     Map<String, String> newCalf = {
       "cattleId": cattleIdController.text,
       "birthDate": birthDateController.text,

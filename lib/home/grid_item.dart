@@ -11,6 +11,7 @@ import '../screen/heat_register.dart';
 import '../screen/insemination.dart';
 import '../screen/milk_ltr.dart';
 import '../vaccination/Vaccination_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GridItem extends StatelessWidget {
   final String title;
@@ -92,7 +93,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title: "Feed Cal.",
+                title:AppLocalizations.of(context)!.feedCal,
                 imageUrl: 'assets/image/feed_calculator.png',
               ),
             ),
@@ -106,7 +107,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title: "Animal List",
+                title:AppLocalizations.of(context)!.animalList,
                 imageUrl: 'assets/image/img_cow (1).png',
               ),
             ),
@@ -120,7 +121,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title: "Insemination",
+                title:AppLocalizations.of(context)!.insemination,
                 imageUrl: 'assets/image/insemination_image.png',
               ),
             ),
@@ -134,7 +135,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title: "Calf Register",
+                title:AppLocalizations.of(context)!.calfRegister,
                 imageUrl: 'assets/image/calf_register.png',
               ),
             ),
@@ -178,10 +179,10 @@ class _GridScreenState extends State<GridScreen> {
                               ),
                               const SizedBox(height: 10),
                               RadioListTile(
-                                title: const Text(
-                                  "Dry Cow Feed Formula (100kg)",
+                                title:   Text(
+                                  AppLocalizations.of(context)!.dryCowFeedFormula,
                                 ),
-                                value: "Dry Cow Feed Formula (100kg)",
+                                value:     AppLocalizations.of(context)!.dryCowFeedFormula,
                                 groupValue: _selectedFormula,
                                 onChanged: (value) {
                                   setModalState(() {
@@ -190,10 +191,10 @@ class _GridScreenState extends State<GridScreen> {
                                 },
                               ),
                               RadioListTile(
-                                title: const Text(
-                                  "Concentrated Feed Composition",
+                                title:   Text(
+                                  AppLocalizations.of(context)!.concentratedFeedComposition,
                                 ),
-                                value: "Concentrated Feed Composition",
+                                value: AppLocalizations.of(context)!.concentratedFeedComposition,
                                 groupValue: _selectedFormula,
                                 onChanged: (value) {
                                   setModalState(() {
@@ -207,7 +208,7 @@ class _GridScreenState extends State<GridScreen> {
                                   Navigator.pop(context);
 
                                   if (_selectedFormula ==
-                                      "Dry Cow Feed Formula (100kg)") {
+                                      AppLocalizations.of(context)!.dryCowFeedFormula) {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -216,7 +217,7 @@ class _GridScreenState extends State<GridScreen> {
                                       ),
                                     );
                                   } else if (_selectedFormula ==
-                                      "Concentrated Feed Composition") {
+                                      AppLocalizations.of(context)!.concentratedFeedComposition) {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -255,7 +256,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title: "Feed Formula",
+                title:AppLocalizations.of(context)!.feedFormula,
                 imageUrl: 'assets/image/cow_image.jpeg',
               ),
             ),
@@ -269,7 +270,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title: "Vaccination",
+                title:AppLocalizations.of(context)!.vaccination,
                 imageUrl: 'assets/image/vaccination.png',
               ),
             ),
@@ -284,7 +285,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title: "Calf Growth",
+                title:AppLocalizations.of(context)!.calfGrowth,
                 imageUrl: 'assets/image/cow_growth.png',
               ),
             ),
@@ -298,7 +299,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title: "Calving Register",
+                title:AppLocalizations.of(context)!.calvingRegister,
                 imageUrl: 'assets/image/calving_register.png',
               ),
             ),
@@ -312,7 +313,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title: "Deworming",
+                title:AppLocalizations.of(context)!.deworming,
                 imageUrl: 'assets/image/deworming.png',
               ),
             ),
@@ -326,7 +327,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title: "Heat Register",
+                title:AppLocalizations.of(context)!.heatRegister,
                 imageUrl: 'assets/image/Heat_Register.png',
               ),
             ),
@@ -340,7 +341,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title: "Milk (Ltr)",
+                title:AppLocalizations.of(context)!.milkLtr,
                 imageUrl: 'assets/image/img_cow (1).png',
               ),
             ),

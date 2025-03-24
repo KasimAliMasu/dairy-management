@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalfGrowth extends StatefulWidget {
   const CalfGrowth({super.key});
@@ -18,75 +19,59 @@ class _CalfGrowthState extends State<CalfGrowth> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Calf Growth",
-          style: TextStyle(color: Colors.white),
-        ),
+        title: Text(localizations.calfGrowth, style: const TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
         leading: IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
-            child: Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
+            child: Icon(Icons.arrow_back, color: Colors.black),
           ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: calves.isEmpty
-          ? const Center(child: Text("No records found"))
+          ? Center(child: Text(localizations.noRecords))
           : ListView.builder(
-              itemCount: calves.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  margin: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    title: Text(
-                      "Cattle ID: ${calves[index]['cattleId']}",
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Date: ${calves[index]['date']}"),
-                        Text(
-                          "Calf Weight: ${calves[index]['calfWeight']}",
-                        ),
-                        Text(
-                          "Notes: ${calves[index]['notes']}",
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
+        itemCount: calves.length,
+        itemBuilder: (context, index) {
+          return Card(
+            margin: const EdgeInsets.all(8.0),
+            child: ListTile(
+              title: Text("${localizations.cattleId}: ${calves[index]['cattleId']}"),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("${localizations.date}: ${calves[index]['date']}"),
+                  Text("${localizations.calfWeight}: ${calves[index]['calfWeight']}"),
+                  Text("${localizations.notes}: ${calves[index]['notes']}"),
+                ],
+              ),
             ),
+          );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         onPressed: () async {
           final newCalf = await Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const AddCalfGrowth(),
-            ),
+            MaterialPageRoute(builder: (context) => const AddCalfGrowth()),
           );
           if (newCalf != null) {
             _addCalf(newCalf);
           }
         },
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
 }
+
 
 class AddCalfGrowth extends StatefulWidget {
   const AddCalfGrowth({super.key});
@@ -103,23 +88,17 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: const Text(
-          "Add Calf Growth",
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
+        title: Text(localizations.addCalfGrowth, style: const TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
-            child: Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
+            child: Icon(Icons.arrow_back, color: Colors.black),
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -129,22 +108,10 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _buildTextField(
-                cattleIdController,
-                "Cattle Id/Name",
-              ),
-              _buildTextField(
-                dateController,
-                "Date",
-              ),
-              _buildTextField(
-                calfWeightController,
-                "Calf Weight",
-              ),
-              _buildTextField(
-                notesController,
-                "Notes",
-              ),
+              _buildTextField(cattleIdController, localizations.cattleId),
+              _buildTextField(dateController, localizations.date),
+              _buildTextField(calfWeightController, localizations.calfWeight),
+              _buildTextField(notesController, localizations.notes),
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
@@ -152,20 +119,10 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
                   onPressed: _submitForm,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 15,
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
                   ),
-                  child: const Text(
-                    "Submit",
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                  ),
+                  child: Text(localizations.submit, style: const TextStyle(fontSize: 18, color: Colors.white)),
                 ),
               ),
             ],
@@ -183,32 +140,28 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
         decoration: InputDecoration(
           hintText: label,
           border: const OutlineInputBorder(),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 15,
-          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         ),
       ),
     );
   }
 
   void _submitForm() {
+    final localizations = AppLocalizations.of(context)!;
+
     if (cattleIdController.text.isEmpty ||
         dateController.text.isEmpty ||
         calfWeightController.text.isEmpty ||
         notesController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please fill all fields"),
-        ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(localizations.fillAllFields)));
       return;
     }
+
     Map<String, String> newCalf = {
       "cattleId": cattleIdController.text,
-      "Date": dateController.text,
-      "fatherName": calfWeightController.text,
-      "motherName": notesController.text,
+      "date": dateController.text,
+      "calfWeight": calfWeightController.text,
+      "notes": notesController.text,
     };
     Navigator.pop(context, newCalf);
   }

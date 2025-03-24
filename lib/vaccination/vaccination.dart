@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
 class AddVaccinationRegister extends StatefulWidget {
@@ -11,24 +12,28 @@ class AddVaccinationRegister extends StatefulWidget {
 class _AddVaccinationRegisterState extends State<AddVaccinationRegister> {
   final TextEditingController cattleIdController = TextEditingController();
   final TextEditingController tagNoController = TextEditingController();
-  final TextEditingController vaccinationDateController =
-      TextEditingController();
-  final TextEditingController vaccineCompanyController =
-      TextEditingController();
+  final TextEditingController vaccinationDateController = TextEditingController();
+  final TextEditingController vaccineCompanyController = TextEditingController();
+
   String? selectedVaccine;
-  final List<String> vaccines = ["Vaccine A", "Vaccine B", "Vaccine C"];
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
+    final List<String> vaccines = [
+      localizations.vaccineA,
+      localizations.vaccineB,
+      localizations.vaccineC
+    ];
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: const Text(
-          "Add Vaccination",
-          style: TextStyle(
-            color: Colors.white,
-          ),
+        title: Text(
+          localizations.addVaccination,
+          style: const TextStyle(color: Colors.white),
         ),
         leading: IconButton(
           icon: const CircleAvatar(
@@ -43,15 +48,15 @@ class _AddVaccinationRegisterState extends State<AddVaccinationRegister> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _buildTextField(cattleIdController, "Cattle Id/Name"),
-              _buildTextField(tagNoController, "Tag No"),
-              _buildTextField(vaccinationDateController, "Vaccination Date"),
-              _buildTextField(vaccineCompanyController, "Vaccine Company"),
+              _buildTextField(cattleIdController, localizations.cattleId),
+              _buildTextField(tagNoController, localizations.tagNo),
+              _buildTextField(vaccinationDateController, localizations.vaccinationDate),
+              _buildTextField(vaccineCompanyController, localizations.vaccineCompany),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: DropdownButtonFormField2<String>(
                   value: selectedVaccine,
-                  hint: const Text("Select vaccine name"),
+                  hint: Text(localizations.selectVaccine),
                   onChanged: (value) {
                     setState(() {
                       selectedVaccine = value;
@@ -65,8 +70,7 @@ class _AddVaccinationRegisterState extends State<AddVaccinationRegister> {
                   }).toList(),
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                   ),
                 ),
               ),
@@ -82,12 +86,9 @@ class _AddVaccinationRegisterState extends State<AddVaccinationRegister> {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 15),
                   ),
-                  child: const Text(
-                    "Submit",
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
+                  child: Text(
+                    localizations.submit,
+                    style: const TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),
               ),
@@ -106,21 +107,22 @@ class _AddVaccinationRegisterState extends State<AddVaccinationRegister> {
         decoration: InputDecoration(
           hintText: label,
           border: const OutlineInputBorder(),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         ),
       ),
     );
   }
 
   void _submitForm() {
+    final localizations = AppLocalizations.of(context)!;
+
     if (cattleIdController.text.isEmpty ||
         tagNoController.text.isEmpty ||
         vaccinationDateController.text.isEmpty ||
         vaccineCompanyController.text.isEmpty ||
         selectedVaccine == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please fill all fields")),
+        SnackBar(content: Text(localizations.fillAllFields)),
       );
       return;
     }

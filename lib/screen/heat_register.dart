@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HeatRegister extends StatefulWidget {
   const HeatRegister({super.key});
@@ -18,61 +19,69 @@ class _HeatRegisterState extends State<HeatRegister> {
 
   @override
   Widget build(BuildContext context) {
+    var t = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Heat Register",
-          style: TextStyle(color: Colors.white),
-        ),
         backgroundColor: Colors.blue,
         leading: IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
-            child: Icon(Icons.arrow_back, color: Colors.black),
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
           ),
           onPressed: () => Navigator.pop(context),
         ),
+        title: Text(
+          t.heatRegister,
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
       ),
       body: records.isEmpty
-          ? const Center(child: Text("No records found"))
+          ? Center(child: Text(t.noRecordsFound))
           : ListView.builder(
-        itemCount: records.length,
-        itemBuilder: (context, index) {
-          return Card(
-            margin: const EdgeInsets.all(8.0),
-            child: ListTile(
-              title: Text("Cattle ID: ${records[index]['cattleId']}"),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Heat Date: ${records[index]['heatDate']}"),
-                  Text("Symptoms: ${records[index]['symptoms']}"),
-                  Text("Diagnosis: ${records[index]['diagnosis']}"),
-                  Text("Treatment: ${records[index]['treatment']}"),
-                  Text("Result: ${records[index]['result']}"),
-                  Text("Cost of Treatment: ${records[index]['costOfTreatment']}"),
-                  Text("Note: ${records[index]['note']}"),
-                ],
-              ),
+              itemCount: records.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  margin: const EdgeInsets.all(8.0),
+                  child: ListTile(
+                    title: Text("${t.cattleId}: ${records[index]['cattleId']}"),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("${t.heat_date}: ${records[index]['heatDate']}"),
+                        Text("${t.symptoms}: ${records[index]['symptoms']}"),
+                        Text("${t.diagnosis}: ${records[index]['diagnosis']}"),
+                        Text("${t.treatment}: ${records[index]['treatment']}"),
+                        Text("${t.result}: ${records[index]['result']}"),
+                        Text(
+                            "${t.cost_of_treatment}: ${records[index]['costOfTreatment']}"),
+                        Text("${t.note}: ${records[index]['note']}"),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         onPressed: () async {
           final newRecord = await Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const AddHeat(),
-            ),
+            MaterialPageRoute(builder: (context) => AddHeat()),
           );
           if (newRecord != null) {
             _addRecord(newRecord);
           }
         },
-        child: const Icon(Icons.add, color: Colors.white),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }
@@ -92,22 +101,30 @@ class _AddHeatState extends State<AddHeat> {
   final TextEditingController diagnosisController = TextEditingController();
   final TextEditingController treatmentController = TextEditingController();
   final TextEditingController resultController = TextEditingController();
-  final TextEditingController costOfTreatmentController = TextEditingController();
+  final TextEditingController costOfTreatmentController =
+      TextEditingController();
   final TextEditingController noteController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    var t = AppLocalizations.of(context)!;
+
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: const Text("Add Heat Record", style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
-            child: Icon(Icons.arrow_back, color: Colors.black),
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
           ),
           onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          t.add_heat_record,
+          style: TextStyle(color: Colors.white),
         ),
       ),
       body: Padding(
@@ -115,25 +132,23 @@ class _AddHeatState extends State<AddHeat> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _buildTextField(cattleIdController, "Cattle Id/Name"),
-              _buildTextField(heatDateController, "Heat Date"),
-              _buildTextField(symptomsController, "Symptoms"),
-              _buildTextField(diagnosisController, "Diagnosis"),
-              _buildTextField(treatmentController, "Treatment"),
-              _buildTextField(resultController, "Result"),
-              _buildTextField(costOfTreatmentController, "Cost of Treatment"),
-              _buildTextField(noteController, "Note"),
+              _buildTextField(cattleIdController, t.cattleId),
+              _buildTextField(heatDateController, t.heat_date),
+              _buildTextField(symptomsController, t.symptoms),
+              _buildTextField(diagnosisController, t.diagnosis),
+              _buildTextField(treatmentController, t.treatment),
+              _buildTextField(resultController, t.result),
+              _buildTextField(costOfTreatmentController, t.cost_of_treatment),
+              _buildTextField(noteController, t.note),
               const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _submitForm,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                  ),
-                  child: const Text("Submit", style: TextStyle(fontSize: 18, color: Colors.white)),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                ),
+                onPressed: _submitForm,
+                child: Text(
+                  t.submit,
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ],
@@ -149,9 +164,8 @@ class _AddHeatState extends State<AddHeat> {
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-          hintText: label,
+          labelText: label,
           border: const OutlineInputBorder(),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         ),
       ),
     );

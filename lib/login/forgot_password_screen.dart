@@ -1,5 +1,6 @@
 import 'package:dairy_management/login/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -59,7 +60,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   child: Column(
                     children: [
                       Text(
-                        "Forgot Password",
+                        AppLocalizations.of(context)!.forgotPassword,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 22,
@@ -72,17 +73,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
                           counterText: "",
-                          labelText: "Phone Number",
+                          labelText:  AppLocalizations.of(context)!.phoneNumber,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Enter your phone number";
+                            return
+                              AppLocalizations.of(context)!.enterPhoneNumber;
                           }
                           if (value.length != 10) {
-                            return "Enter a valid 10-digit phone number";
+                            return  AppLocalizations.of(context)!.enterAValid10DigitPhoneNumber;
                           }
                           return null;
                         },
@@ -102,7 +104,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           ),
                           onPressed: _login,
                           child: Text(
-                            "Forgot",
+                              AppLocalizations.of(context)!.forgot,
                             style: TextStyle(color: Colors.white),
                           ),
                         ),

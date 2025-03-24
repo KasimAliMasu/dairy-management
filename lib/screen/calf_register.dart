@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../calf_register/add_calf_egister.dart';
 
 class CalfRegister extends StatefulWidget {
@@ -20,11 +20,13 @@ class _CalfRegisterState extends State<CalfRegister> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Calf Register",
-          style: TextStyle(color: Colors.white),
+        title: Text(
+          localizations.calfRegister,
+          style: const TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.blue,
         leading: IconButton(
@@ -39,36 +41,36 @@ class _CalfRegisterState extends State<CalfRegister> {
         ),
       ),
       body: calves.isEmpty
-          ? const Center(
-              child: Text("No records found"),
-            )
+          ? Center(
+        child: Text(localizations.noRecordsFound),
+      )
           : ListView.builder(
-              itemCount: calves.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  margin: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    title: Text(
-                      "Cattle ID: ${calves[index]['cattleId']}",
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Birth Date: ${calves[index]['birthDate']}",
-                        ),
-                        Text(
-                          "Father: ${calves[index]['fatherName']}",
-                        ),
-                        Text(
-                          "Mother: ${calves[index]['motherName']}",
-                        ),
-                      ],
-                    ),
+        itemCount: calves.length,
+        itemBuilder: (context, index) {
+          return Card(
+            margin: const EdgeInsets.all(8.0),
+            child: ListTile(
+              title: Text(
+                "${localizations.cattleId}: ${calves[index][localizations.cattleId]}",
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "${localizations.birthDate}: ${calves[index][localizations.birthDate]}",
                   ),
-                );
-              },
+                  Text(
+                    "${localizations.father}: ${calves[index][localizations.father]}",
+                  ),
+                  Text(
+                    "${localizations.mother}: ${calves[index][localizations.mother]}",
+                  ),
+                ],
+              ),
             ),
+          );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         shape: RoundedRectangleBorder(

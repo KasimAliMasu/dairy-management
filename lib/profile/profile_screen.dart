@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../login/login_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -21,9 +24,9 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
-            "Feyzars Farokhi",
-            style: TextStyle(
+          Text(
+            AppLocalizations.of(context)!.feyzarsFarokhi,
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Colors.black,
@@ -61,14 +64,68 @@ class ProfileScreen extends StatelessWidget {
               ),
               child: ListView(
                 children: [
-                  _buildMenuItem(context, "Dashboard", FeatherIcons.home, DashboardScreen()),
-                  _buildMenuItem(context, "Cattle Register", FeatherIcons.book, CattleRegisterScreen()),
-                  _buildMenuItem(context, "Cattle Board", FeatherIcons.bell, CattleBoardScreen()),
-                  _buildMenuItem(context, "Milk Management", FeatherIcons.droplet, MilkManagementScreen(), badge: 2),
-                  _buildMenuItem(context, "Feeding", FeatherIcons.box, FeedingScreen()),
-                  _buildMenuItem(context, "Vaccination", FeatherIcons.crosshair, VaccinationScreen(), badge: 1),
-                  _buildMenuItem(context, "Expected Vaccination", FeatherIcons.calendar, ExpectedVaccinationScreen()),
-                  _buildMenuItem(context, "Logout", FeatherIcons.logOut, LogoutScreen(), isLogout: true),
+                  _buildMenuItem(
+                    context,
+                    AppLocalizations.of(context)!.dashboard,
+                    FeatherIcons.home,
+                    DashboardScreen(),
+                  ),
+                  _buildMenuItem(
+                    context,
+                    AppLocalizations.of(context)!.cattleRegister,
+                    FeatherIcons.book,
+                    CattleRegisterScreen(),
+                  ),
+                  _buildMenuItem(
+                    context,
+                    AppLocalizations.of(context)!.cattleBoard,
+                    FeatherIcons.bell,
+                    CattleBoardScreen(),
+                  ),
+                  _buildMenuItem(
+                    context,
+                    AppLocalizations.of(context)!.milkManagement,
+                    FeatherIcons.droplet,
+                    MilkManagementScreen(),
+                    badge: 2,
+                  ),
+                  _buildMenuItem(
+                    context,
+                    AppLocalizations.of(context)!.feeding,
+                    FeatherIcons.box,
+                    FeedingScreen(),
+                  ),
+                  _buildMenuItem(
+                    context,
+                    AppLocalizations.of(context)!.vaccination,
+                    FeatherIcons.crosshair,
+                    VaccinationScreen(),
+                    badge: 1,
+                  ),
+                  _buildMenuItem(
+                    context,
+                    AppLocalizations.of(context)!.expectedVaccination,
+                    FeatherIcons.calendar,
+                    ExpectedVaccinationScreen(),
+                  ),
+                  // Logout button with dialog
+                  ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.red.shade100,
+                      child: const Icon(
+                        FeatherIcons.logOut,
+                        color: Colors.red,
+                      ),
+                    ),
+                    title: Text(
+                      AppLocalizations.of(context)!.logout,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                      ),
+                    ),
+                    onTap: () => _logout(context),
+                  ),
                 ],
               ),
             ),
@@ -78,36 +135,61 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuItem(BuildContext context, String title, IconData icon, Widget screen,
-      {int? badge, bool isLogout = false}) {
+  void _logout(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(AppLocalizations.of(context)!.logout),
+        content:  Text(
+            AppLocalizations.of(context)!.areYouSureYouWantToLogOut,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
+            },
+            child: const Text("Logout"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Menu Item Widget
+  Widget _buildMenuItem(
+      BuildContext context,
+      String title,
+      IconData icon,
+      Widget screen, {
+        int? badge,
+      }) {
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: isLogout ? Colors.red.shade100 : Colors.grey.shade200,
-        child: Icon(
-          icon,
-          color: isLogout ? Colors.red : Colors.black,
-        ),
+        backgroundColor: Colors.grey.shade200,
+        child: Icon(icon, color: Colors.black),
       ),
       title: Text(
         title,
-        style: TextStyle(
-          fontWeight: isLogout ? FontWeight.bold : FontWeight.normal,
-          color: isLogout ? Colors.red : Colors.black,
-        ),
+        style: const TextStyle(color: Colors.black),
       ),
       trailing: badge != null
           ? Container(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           color: Colors.orange,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Text(
           badge.toString(),
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-          ),
+          style: const TextStyle(color: Colors.white, fontSize: 12),
         ),
       )
           : null,
@@ -121,62 +203,58 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
+/// Dummy Screens for Navigation
 class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return _buildScreen(context, "Dashboard");
+    return _buildScreen(context, AppLocalizations.of(context)!.dashboard);
   }
 }
 
 class CattleRegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return _buildScreen(context, "Cattle Register");
+    return _buildScreen(context, AppLocalizations.of(context)!.cattleRegister);
   }
 }
 
 class CattleBoardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return _buildScreen(context, "Cattle Board");
+    return _buildScreen(context, AppLocalizations.of(context)!.cattleBoard);
   }
 }
 
 class MilkManagementScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return _buildScreen(context, "Milk Management");
+    return _buildScreen(context, AppLocalizations.of(context)!.milkManagement);
   }
 }
 
 class FeedingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return _buildScreen(context, "Feeding");
+    return _buildScreen(context, AppLocalizations.of(context)!.feeding);
   }
 }
 
 class VaccinationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return _buildScreen(context, "Vaccination");
+    return _buildScreen(context, AppLocalizations.of(context)!.vaccination);
   }
 }
 
 class ExpectedVaccinationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return _buildScreen(context, "Expected Vaccination");
+    return _buildScreen(context, AppLocalizations.of(context)!.expectedVaccination);
   }
 }
 
-class LogoutScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return _buildScreen(context, "Logout");
-  }
-}
 
+/// Generic Screen Builder
 Widget _buildScreen(BuildContext context, String title) {
   return Scaffold(
     appBar: AppBar(
@@ -184,7 +262,7 @@ Widget _buildScreen(BuildContext context, String title) {
     ),
     body: Center(
       child: Text(
-        'Welcome to $title',
+        title,
         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
       ),
     ),

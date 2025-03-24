@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DewormingScreen extends StatefulWidget {
   const DewormingScreen({super.key});
@@ -20,8 +21,8 @@ class _DewormingScreenState extends State<DewormingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Deworming",
+        title:  Text(
+        AppLocalizations.of(context)!.deworming,
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.blue,
@@ -37,8 +38,8 @@ class _DewormingScreenState extends State<DewormingScreen> {
         ),
       ),
       body: calves.isEmpty
-          ? const Center(
-              child: Text("No records found"),
+          ?  Center(
+              child: Text(AppLocalizations.of(context)!.no_records_found),
             )
           : ListView.builder(
               itemCount: calves.length,
@@ -47,19 +48,19 @@ class _DewormingScreenState extends State<DewormingScreen> {
                   margin: const EdgeInsets.all(8.0),
                   child: ListTile(
                     title: Text(
-                      "Cattle ID: ${calves[index]['cattleId']}",
+                      "Cattle ID: ${calves[index][AppLocalizations.of(context)!.cattle_id]}",
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Deworming Data: ${calves[index]['dewormingData']}",
+                          "Deworming Data: ${calves[index][AppLocalizations.of(context)!.deworming_data]}",
                         ),
                         Text(
-                          "Deworming Medicine Company Name: ${calves[index]['dewormingMedicineCompanyName']}",
+                          "Deworming Medicine Company Name: ${calves[index][AppLocalizations.of(context)!.deworming_medicine_company]}",
                         ),
                         Text(
-                          "Deworming Medicine Name: ${calves[index]['dewormingMedicineName']}",
+                          "Deworming Medicine Name: ${calves[index][AppLocalizations.of(context)!.deworming_medicine_name]}",
                         ),
                       ],
                     ),
@@ -113,8 +114,10 @@ class _AddDewormingState extends State<AddDeworming> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: const Text(
-          "Add Calf Growth",
+        title:  Text(
+
+          AppLocalizations.of(context)!.add_calf_growth,
+
           style: TextStyle(
             color: Colors.white,
           ),
@@ -137,19 +140,19 @@ class _AddDewormingState extends State<AddDeworming> {
             children: [
               _buildTextField(
                 cattleIdController,
-                "Cattle Id/Name",
+                  AppLocalizations.of(context)!.cattle_id,
               ),
               _buildTextField(
                 dewormingDataController,
-                "Deworming Data",
+                  AppLocalizations.of(context)!.deworming_data,
               ),
               _buildTextField(
                 dewormingMedicineCompanyNameController,
-                "Deworming Medicine Company Name",
+                  AppLocalizations.of(context)!.deworming_medicine_company,
               ),
               _buildTextField(
                 dewormingMedicineNameController,
-                "Deworming Medicine Name",
+                  AppLocalizations.of(context)!.deworming_medicine_name,
               ),
               const SizedBox(height: 20),
               SizedBox(
@@ -165,8 +168,8 @@ class _AddDewormingState extends State<AddDeworming> {
                       vertical: 15,
                     ),
                   ),
-                  child: const Text(
-                    "Submit",
+                  child: Text(
+                    AppLocalizations.of(context)!.submit,
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.white,
@@ -202,7 +205,7 @@ class _AddDewormingState extends State<AddDeworming> {
         dewormingMedicineCompanyNameController.text.isEmpty ||
         dewormingMedicineNameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please fill all fields")),
+          SnackBar(content: Text(AppLocalizations.of(context)!.please_fill_all_fields)),
       );
       return;
     }
