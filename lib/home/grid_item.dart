@@ -1,6 +1,5 @@
 import 'package:dairy_management/screen/calving_register.dart';
 import 'package:flutter/material.dart';
-import '../screen/animal_list.dart';
 import '../screen/calf_growth.dart';
 import '../screen/calf_register.dart';
 import '../screen/deworming.dart';
@@ -98,20 +97,20 @@ class _GridScreenState extends State<GridScreen> {
                 imageUrl: 'assets/image/feed_calculator.png',
               ),
             ),
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AnimalList(),
-                  ),
-                );
-              },
-              child: GridItem(
-                title:AppLocalizations.of(context)!.animalList,
-                imageUrl: 'assets/image/img_cow (1).png',
-              ),
-            ),
+            // InkWell(
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => AnimalList(),
+            //       ),
+            //     );
+            //   },
+            //   child: GridItem(
+            //     title:AppLocalizations.of(context)!.animalList,
+            //     imageUrl: 'assets/image/img_cow (1).png',
+            //   ),
+            // ),
             InkWell(
               onTap: () {
                 Navigator.push(

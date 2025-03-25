@@ -3,6 +3,7 @@ import 'package:dairy_management/profile/profile_screen.dart';
 import 'package:dairy_management/home/grid_item.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../screen/notification_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,13 +13,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-          onWillPop: () async {
-            return await _showExitPopup(context) ?? false;
-          },
+      onWillPop: () async {
+        return await _showExitPopup(context) ?? false;
+      },
       child: Scaffold(
         backgroundColor: Colors.blue,
         appBar: AppBar(
@@ -54,9 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   const SizedBox(height: 5),
-                    Text(
+                  Text(
                     AppLocalizations.of(context)!.feyzarsFarokhi,
-
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -74,14 +73,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.white,
                 size: 30,
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const NotificationScreen(),
+                  ),
+                );
+              },
             ),
           ],
         ),
         body: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
               Container(
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -90,46 +96,28 @@ class _HomeScreenState extends State<HomeScreen> {
                     topRight: Radius.circular(40),
                   ),
                 ),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: AppLocalizations.of(context)!.search,
-                          filled: true,
-                          fillColor: Colors.grey.shade200,
-                          prefixIcon: const Icon(
-                            Icons.search,
-                            color: Colors.black,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                    GridScreen(),
-                    const SizedBox(height: 20),
-                  ],
+                child: SizedBox(
+                  height: 650,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: GridScreen(),
+                  ),
                 ),
               ),
             ],
           ),
         ),
-
       ),
     );
   }
 }
+
 Future<bool?> _showExitPopup(BuildContext context) async {
   return showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      title:  Text(AppLocalizations.of(context)!.exitApp),
-      content:  Text(AppLocalizations.of(context)!.areYouSureYouWantToExit),
+      title: Text(AppLocalizations.of(context)!.exitApp),
+      content: Text(AppLocalizations.of(context)!.areYouSureYouWantToExit),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),

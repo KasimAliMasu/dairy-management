@@ -224,5 +224,8 @@
     "areYouSureYouWantToLogOut":"क्या आप लॉग आउट करना चाहते हैं?",
     "exitApp":"ऐप से बाहर निकलें",
     "areYouSureYouWantToExit":"क्या आप निश्चित हैं आपकी बाहर निकलने की इच्छा है?",
-    "cowName":"गाय का नाम"
+    "cowName":"गाय का नाम",
+    "notification":"अधिसूचना",
+    "name":"नाम",
+    "color":"रंग"
 }

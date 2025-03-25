@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import '../home/Bottom_bar.dart';
 import '../login/login_screen.dart';
+import '../screen/milk_ltr.dart';
+import '../vaccination/vaccination.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -68,8 +70,9 @@ class ProfileScreen extends StatelessWidget {
                     context,
                     AppLocalizations.of(context)!.dashboard,
                     FeatherIcons.home,
-                    DashboardScreen(),
+                    MainScreen(),
                   ),
+
                   _buildMenuItem(
                     context,
                     AppLocalizations.of(context)!.cattleRegister,
@@ -86,7 +89,7 @@ class ProfileScreen extends StatelessWidget {
                     context,
                     AppLocalizations.of(context)!.milkManagement,
                     FeatherIcons.droplet,
-                    MilkManagementScreen(),
+                    MilkingDetailsScreen(),
                     badge: 2,
                   ),
                   _buildMenuItem(
@@ -99,7 +102,7 @@ class ProfileScreen extends StatelessWidget {
                     context,
                     AppLocalizations.of(context)!.vaccination,
                     FeatherIcons.crosshair,
-                    VaccinationScreen(),
+                    VaccinationRegister(),
                     badge: 1,
                   ),
                   _buildMenuItem(
@@ -108,7 +111,6 @@ class ProfileScreen extends StatelessWidget {
                     FeatherIcons.calendar,
                     ExpectedVaccinationScreen(),
                   ),
-                  // Logout button with dialog
                   ListTile(
                     leading: CircleAvatar(
                       backgroundColor: Colors.red.shade100,
@@ -203,13 +205,7 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
-/// Dummy Screens for Navigation
-class DashboardScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return _buildScreen(context, AppLocalizations.of(context)!.dashboard);
-  }
-}
+
 
 class CattleRegisterScreen extends StatelessWidget {
   @override
@@ -225,12 +221,7 @@ class CattleBoardScreen extends StatelessWidget {
   }
 }
 
-class MilkManagementScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return _buildScreen(context, AppLocalizations.of(context)!.milkManagement);
-  }
-}
+
 
 class FeedingScreen extends StatelessWidget {
   @override
@@ -239,14 +230,9 @@ class FeedingScreen extends StatelessWidget {
   }
 }
 
-class VaccinationScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return _buildScreen(context, AppLocalizations.of(context)!.vaccination);
-  }
-}
-
 class ExpectedVaccinationScreen extends StatelessWidget {
+  const ExpectedVaccinationScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return _buildScreen(context, AppLocalizations.of(context)!.expectedVaccination);

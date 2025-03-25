@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -24,7 +25,7 @@ class _CalvingRegisterState extends State<CalvingRegister> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        leading:  IconButton(
+        leading: IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
             child: Icon(
@@ -44,9 +45,16 @@ class _CalvingRegisterState extends State<CalvingRegister> {
           : ListView.builder(
         itemCount: calves.length,
         itemBuilder: (context, index) {
+          String? imageUrl = calves[index]['selectedAnimalImage'];
           return Card(
             margin: const EdgeInsets.all(8.0),
             child: ListTile(
+              leading: (imageUrl != null && imageUrl.isNotEmpty)
+                  ? CircleAvatar(
+                radius: 25,
+                backgroundImage: NetworkImage(imageUrl),
+              )
+                  : const Icon(Icons.image_not_supported, color: Colors.grey, size: 50),
               title: Text("${locale.cattleId}: ${calves[index]['cattleId']}"),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,8 +86,6 @@ class _CalvingRegisterState extends State<CalvingRegister> {
   }
 }
 
-
-
 class AddCalvingRegister extends StatefulWidget {
   const AddCalvingRegister({super.key});
 
@@ -93,6 +99,14 @@ class _AddCalvingRegisterState extends State<AddCalvingRegister> {
   final TextEditingController lactationNoController = TextEditingController();
   final TextEditingController calfNameController = TextEditingController();
   String calfGender = "Male";
+  String? _selectedAnimal;
+  String? _selectedAnimalImage;
+
+  final List<Map<String, String>> animalList = [
+    {'name': 'Cow1', 'image': 'https://plus.unsplash.com/premium_photo-1668446123344-d7945fb07eaa?w=600&auto=format&fit=crop&q=60'},
+    {'name': 'Cow2', 'image': 'https://images.unsplash.com/photo-1595365691689-6b7b4e1970cf?w=600&auto=format&fit=crop&q=60'},
+    {'name': 'Cow3', 'image': 'https://images.unsplash.com/photo-1545407263-7ff5aa2ad921?w=600&auto=format&fit=crop&q=60'},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +115,7 @@ class _AddCalvingRegisterState extends State<AddCalvingRegister> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-       leading:  IconButton(
+        leading: IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
             child: Icon(
@@ -121,6 +135,7 @@ class _AddCalvingRegisterState extends State<AddCalvingRegister> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              _buildDropdown(),
               _buildTextField(cattleIdController, locale.cattleId),
               _buildTextField(calvingDateController, locale.calvingDate),
               _buildTextField(lactationNoController, locale.lactationNo),
@@ -134,7 +149,7 @@ class _AddCalvingRegisterState extends State<AddCalvingRegister> {
                     backgroundColor: Colors.blue,
                   ),
                   onPressed: _submitForm,
-                  child: Text(locale.submit,style: TextStyle(color: Colors.white,),),
+                  child: Text(locale.submit, style: const TextStyle(color: Colors.white)),
                 ),
               ),
             ],
@@ -143,6 +158,43 @@ class _AddCalvingRegisterState extends State<AddCalvingRegister> {
       ),
     );
   }
+
+
+  Widget _buildDropdown() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: DropdownButtonFormField2<String>(
+        value: _selectedAnimal,
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        ),
+        hint: Text(AppLocalizations.of(context)!.selectAnimalType),
+        items: animalList.map((animal) {
+          return DropdownMenuItem(
+            value: animal['name'],
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundImage: NetworkImage(animal['image']!),
+                  radius: 15,
+                ),
+                const SizedBox(width: 10),
+                Text(animal['name']!),
+              ],
+            ),
+          );
+        }).toList(),
+        onChanged: (value) {
+          setState(() {
+            _selectedAnimal = value;
+            _selectedAnimalImage = animalList.firstWhere((a) => a['name'] == value)['image'];
+          });
+        },
+      ),
+    );
+  }
+
 
   Widget _buildTextField(TextEditingController controller, String label) {
     return Padding(

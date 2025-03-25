@@ -16,7 +16,7 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
-    const AddCattle(),
+     AddCattle(),
     const SettingScreen(),
   ];
 
@@ -58,7 +58,7 @@ class _MainScreenState extends State<MainScreen> {
                 FeatherIcons.home,
                 size: 30,
               ),
-              label: '',
+              label: 'Home',
             ),
             BottomNavigationBarItem(
               icon: CircleAvatar(
@@ -70,14 +70,14 @@ class _MainScreenState extends State<MainScreen> {
                   color: Colors.white,
                 ),
               ),
-              label: '',
+              label: 'Add',
             ),
             BottomNavigationBarItem(
               icon: Icon(
                 FeatherIcons.settings,
                 size: 30,
               ),
-              label: '',
+              label: 'Setting',
             ),
           ],
         ),

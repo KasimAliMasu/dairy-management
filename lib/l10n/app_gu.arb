@@ -224,7 +224,11 @@
     "areYouSureYouWantToLogOut":"શું તમે ખરેખર લોગઆઉટ કરવા માંગો છો?",
     "exitApp":"એપ્લિકેશનમાંથી બહાર નીકળો",
     "areYouSureYouWantToExit":"શું તમે ખરેખર બહાર નીકળવા માંગો છો?",
-    "cowName":""
+    "cowName":"ગાયનું નામ",
+    "notification":"સૂચના",
+    "name":"નામ",
+    "color":"રંગ"
+
 
 
 }
