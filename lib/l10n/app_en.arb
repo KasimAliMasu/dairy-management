@@ -227,7 +227,8 @@
 "cowName":"Cow Name",
 "notification":"Notification",
 "name":"Name",
-"color":"Color"
+"color":"Color",
+"type":"Type"
 
 
 }

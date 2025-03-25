@@ -227,5 +227,6 @@
     "cowName":"गाय का नाम",
     "notification":"अधिसूचना",
     "name":"नाम",
-    "color":"रंग"
+    "color":"रंग",
+    "type":"प्रकार"
 }

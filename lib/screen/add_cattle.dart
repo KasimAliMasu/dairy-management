@@ -106,7 +106,7 @@ class _AddCattleState extends State<AddCattle> {
                                   )
                                 : const Icon(Icons.image, size: 50),
                             title: Text(
-                              "ID: ${animalList[index]['id']}",
+                              "${AppLocalizations.of(context)!.id}: ${animalList[index]['id']}",
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -115,11 +115,13 @@ class _AddCattleState extends State<AddCattle> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                    "Type: ${animalList[index]['selectedAnimalType']}",
+                                    "${AppLocalizations.of(context)!.type}: ${animalList[index]['selectedAnimalType']}",
                                     style: const TextStyle(fontSize: 14)),
-                                Text("Name: ${animalList[index]['name']}",
+                                Text(
+                                    "${AppLocalizations.of(context)!.name}: ${animalList[index]['name']}",
                                     style: const TextStyle(fontSize: 14)),
-                                Text("Color: ${animalList[index]['color']}",
+                                Text(
+                                    "${AppLocalizations.of(context)!.color}: ${animalList[index]['color']}",
                                     style: const TextStyle(fontSize: 14)),
                               ],
                             ),

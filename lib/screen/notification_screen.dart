@@ -83,7 +83,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             child: const Text(
               "Clear All",
               style: TextStyle(
-                color: Colors.red,
+                color: Colors.white,
               ),
             ),
           ),
