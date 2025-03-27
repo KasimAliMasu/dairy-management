@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 
 class HeatRegister extends StatefulWidget {
   const HeatRegister({super.key});
@@ -11,10 +14,69 @@ class HeatRegister extends StatefulWidget {
 class _HeatRegisterState extends State<HeatRegister> {
   List<Map<String, String>> records = [];
 
+  @override
+  void initState() {
+    super.initState();
+    _loadRecords();
+  }
+
+  Future<void> _loadRecords() async {
+    final prefs = await SharedPreferences.getInstance();
+    final storedRecords = prefs.getString('heat_records');
+    if (storedRecords != null) {
+      setState(() {
+        records = List<Map<String, String>>.from(
+          json
+              .decode(storedRecords)
+              .map((item) => Map<String, String>.from(item)),
+        );
+      });
+    }
+  }
+
+  Future<void> _saveRecords() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('heat_records', json.encode(records));
+  }
+
   void _addRecord(Map<String, String> recordData) {
     setState(() {
       records.add(recordData);
     });
+    _saveRecords();
+  }
+
+  void _editRecord(int index, Map<String, String> updatedData) {
+    setState(() {
+      records[index] = updatedData;
+    });
+    _saveRecords();
+  }
+
+  void _deleteRecord(int index) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Delete Confirmation'),
+        content: Text('Are you sure you want to delete this record?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              setState(() {
+                records.removeAt(index);
+              });
+              _saveRecords();
+              Navigator.pop(context);
+            },
+            child: Text('Delete'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -23,23 +85,15 @@ class _HeatRegisterState extends State<HeatRegister> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
         leading: IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
-            child: Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
+            child: Icon(Icons.arrow_back, color: Colors.black),
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
-          t.heatRegister,
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
+        title: Text(t.heatRegister,style: TextStyle(color: Colors.white),),
+        backgroundColor: Colors.blue,
       ),
       body: records.isEmpty
           ? Center(child: Text(t.noRecordsFound))
@@ -63,6 +117,30 @@ class _HeatRegisterState extends State<HeatRegister> {
                         Text("${t.note}: ${records[index]['note']}"),
                       ],
                     ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () async {
+                            final updatedRecord = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    AddHeat(existingData: records[index]),
+                              ),
+                            );
+                            if (updatedRecord != null) {
+                              _editRecord(index, updatedRecord);
+                            }
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => _deleteRecord(index),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -72,7 +150,7 @@ class _HeatRegisterState extends State<HeatRegister> {
         onPressed: () async {
           final newRecord = await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddHeat()),
+            MaterialPageRoute(builder: (context) => const AddHeat()),
           );
           if (newRecord != null) {
             _addRecord(newRecord);
@@ -88,7 +166,8 @@ class _HeatRegisterState extends State<HeatRegister> {
 }
 
 class AddHeat extends StatefulWidget {
-  const AddHeat({super.key});
+  final Map<String, String>? existingData;
+  const AddHeat({super.key, this.existingData});
 
   @override
   State<AddHeat> createState() => _AddHeatState();
@@ -106,69 +185,49 @@ class _AddHeatState extends State<AddHeat> {
   final TextEditingController noteController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
-    var t = AppLocalizations.of(context)!;
-
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        leading: IconButton(
-          icon: const CircleAvatar(
-            backgroundColor: Colors.white,
-            child: Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          t.add_heat_record,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _buildTextField(cattleIdController, t.cattleId),
-              _buildTextField(heatDateController, t.heat_date),
-              _buildTextField(symptomsController, t.symptoms),
-              _buildTextField(diagnosisController, t.diagnosis),
-              _buildTextField(treatmentController, t.treatment),
-              _buildTextField(resultController, t.result),
-              _buildTextField(costOfTreatmentController, t.cost_of_treatment),
-              _buildTextField(noteController, t.note),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                ),
-                onPressed: _submitForm,
-                child: Text(
-                  t.submit,
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  void initState() {
+    super.initState();
+    if (widget.existingData != null) {
+      cattleIdController.text = widget.existingData!['cattleId'] ?? '';
+      heatDateController.text = widget.existingData!['heatDate'] ?? '';
+      symptomsController.text = widget.existingData!['symptoms'] ?? '';
+      diagnosisController.text = widget.existingData!['diagnosis'] ?? '';
+      treatmentController.text = widget.existingData!['treatment'] ?? '';
+      resultController.text = widget.existingData!['result'] ?? '';
+      costOfTreatmentController.text =
+          widget.existingData!['costOfTreatment'] ?? '';
+      noteController.text = widget.existingData!['note'] ?? '';
+    }
   }
 
-  Widget _buildTextField(TextEditingController controller, String label) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          border: const OutlineInputBorder(),
-        ),
-      ),
+  @override
+  void dispose() {
+    cattleIdController.dispose();
+    heatDateController.dispose();
+    symptomsController.dispose();
+    diagnosisController.dispose();
+    treatmentController.dispose();
+    resultController.dispose();
+    costOfTreatmentController.dispose();
+    noteController.dispose();
+    super.dispose();
+  }
+
+  /// Function to pick a date
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
     );
+
+    if (pickedDate != null) {
+      String formattedDate = DateFormat(' dd-MM-yyyy').format(pickedDate);
+      setState(() {
+        heatDateController.text = formattedDate;
+      });
+    }
   }
 
   void _submitForm() {
@@ -185,6 +244,7 @@ class _AddHeatState extends State<AddHeat> {
       );
       return;
     }
+
     Map<String, String> newRecord = {
       "cattleId": cattleIdController.text,
       "heatDate": heatDateController.text,
@@ -196,5 +256,143 @@ class _AddHeatState extends State<AddHeat> {
       "note": noteController.text,
     };
     Navigator.pop(context, newRecord);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+          leading: IconButton(
+            icon: const CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Icon(Icons.arrow_back, color: Colors.black),
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
+          title: Text(widget.existingData == null
+              ? "Add Heat Record"
+              : "Edit Heat Record",style: TextStyle(color: Colors.white),)),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                    controller: cattleIdController,
+                    decoration: const InputDecoration(
+                      labelText: "Cattle ID",
+                      border:   OutlineInputBorder(),
+                      contentPadding:   EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 15),
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: heatDateController,
+                  decoration: const InputDecoration(
+                    labelText: "Heat Date",
+                    border:   OutlineInputBorder(),
+                    contentPadding:   EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                    suffixIcon: Icon(Icons.calendar_today),
+                  ),
+                  readOnly: true,
+                  onTap: () => _selectDate(context),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: symptomsController,
+                  decoration: InputDecoration(
+                    labelText: "Symptoms",
+                    border: const OutlineInputBorder(),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                    controller: diagnosisController,
+                    decoration: const InputDecoration(
+                      labelText: "Diagnosis",
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                    controller: treatmentController,
+                    decoration: const InputDecoration(
+                      labelText: "Treatment",
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                    controller: resultController,
+                    decoration: const InputDecoration(
+                      labelText: "Result",
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                    controller: costOfTreatmentController,
+                    decoration: const InputDecoration(
+                      labelText: "Cost of Treatment",
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                    controller: noteController,
+                    decoration: const InputDecoration(
+                      labelText: "Note",
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                    )),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _submitForm,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context)!.submit,
+                    style: const TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
+              ),
+
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

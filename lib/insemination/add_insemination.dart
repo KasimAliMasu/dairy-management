@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddInsemination extends StatefulWidget {
-  const AddInsemination({super.key});
+  const AddInsemination({super.key,this.existingData});
+  final Map<String, String>? existingData;
 
   @override
   State<AddInsemination> createState() => _AddInseminationState();
@@ -20,7 +21,7 @@ class _AddInseminationState extends State<AddInsemination> {
   @override
   void initState() {
     super.initState();
-    selectedMethod = "";
+    selectedMethod = ""; // Default empty string to avoid null issues
   }
 
   @override
@@ -33,10 +34,7 @@ class _AddInseminationState extends State<AddInsemination> {
         leading: IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
-            child: Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
+            child: Icon(Icons.arrow_back, color: Colors.black),
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -111,11 +109,27 @@ class _AddInseminationState extends State<AddInsemination> {
   }
 
   void _submitForm() {
-    print("Artificial Insemination Date: ${inseminationDateController.text}");
-    print("Semen Company: ${semenCompanyController.text}");
-    print("Bull Name: ${bullNameController.text}");
-    print("Tag No: ${tagNoController.text}");
-    print("Lactation No: ${lactationNoController.text}");
-    print("Selected Method: $selectedMethod");
+    if (inseminationDateController.text.isEmpty ||
+        semenCompanyController.text.isEmpty ||
+        bullNameController.text.isEmpty ||
+        tagNoController.text.isEmpty ||
+        lactationNoController.text.isEmpty ||
+        selectedMethod.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please fill all fields")),
+      );
+      return;
+    }
+
+    Map<String, String> inseminationData = {
+      "inseminationDate": inseminationDateController.text,
+      "semenCompany": semenCompanyController.text,
+      "bullName": bullNameController.text,
+      "tagNo": tagNoController.text,
+      "lactationNo": lactationNoController.text,
+      "selectedMethod": selectedMethod,
+    };
+
+    Navigator.pop(context, inseminationData); // Returning data to previous screen
   }
 }

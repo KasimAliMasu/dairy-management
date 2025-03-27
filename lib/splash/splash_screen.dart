@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'package:dairy_management/login/login_screen.dart';
 import 'package:flutter/material.dart';
+
+import '../home/Bottom_bar.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Timer(Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => LoginScreen()),
+        MaterialPageRoute(builder: (context) => MainScreen()),
       );
     });
   }

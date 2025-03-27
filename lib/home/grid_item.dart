@@ -88,7 +88,7 @@ class _GridScreenState extends State<GridScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const FeedCalculator(),
+                    builder: (context) =>  FeedCalculatorScreen(),
                   ),
                 );
               },

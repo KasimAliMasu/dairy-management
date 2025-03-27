@@ -1,7 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
-import '../insemination/add_insemination.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../insemination/add_insemination.dart';
 
 class InseminationScreen extends StatefulWidget {
   const InseminationScreen({super.key});
@@ -11,60 +12,91 @@ class InseminationScreen extends StatefulWidget {
 }
 
 class _InseminationScreenState extends State<InseminationScreen> {
-  String? selectedType; // Change to nullable for better handling
+  String? selectedType;
+  List<Map<String, String>> cattleData = [];
 
-  final List<Map<String, String>> cattleData = [
-    {
-      "CattleId": "tvbf",
-      "TagNo": "frvf",
-      "AIDate": "02/11/2023",
-      "PregnancyDays": "16 Month 3 Days",
-      "PregnancyStatus": "A.I.",
-      "CalvingDate": "03/08/2024",
-      "CalvingDueDays": "-207",
-      "LactationNo": "dcv",
-      "SemenCompany": "vrfv",
-      "BullName": "vfdv"
-    },
-    {
-      "CattleId": "tvbf",
-      "TagNo": "frvf",
-      "AIDate": "02/11/2023",
-      "PregnancyDays": "16 Month 3 Days",
-      "PregnancyStatus": "A.I.",
-      "CalvingDate": "03/08/2024",
-      "CalvingDueDays": "-207",
-      "LactationNo": "dcv",
-      "SemenCompany": "vrfv",
-      "BullName": "vfdv"
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? storedData = prefs.getString('cattleData');
+
+    if (storedData != null) {
+      try {
+        List<dynamic> decodedList = json.decode(storedData);
+        setState(() {
+          cattleData = decodedList.map((item) => Map<String, String>.from(item)).toList();
+        });
+      } catch (e) {
+        print("Error loading data: $e");
+      }
+    }
+  }
+
+  Future<void> _saveData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('cattleData', json.encode(cattleData));
+  }
+
+  void _addOrUpdateData(Map<String, String> newData, [int? index]) {
+    setState(() {
+      if (index != null) {
+        // Update existing data
+        cattleData[index] = newData;
+      } else {
+        // Add new data
+        cattleData.add(newData);
+      }
+    });
+    _saveData();
+  }
+
+  void _deleteData(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm Deletion"),
+          content: const Text("Are you sure you want to delete this record?"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  cattleData.removeAt(index);
+                });
+                _saveData();
+                Navigator.of(context).pop();
+              },
+              child: const Text("Delete", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-
-    // Define dropdown values using localization
-    final dropdownValues = [
-      localizations.all,
-      localizations.ai,
-      localizations.notPregnant,
-    ];
-
-    // Ensure selectedType is correctly set
-    selectedType ??= dropdownValues.first; // Set default if null
+    final dropdownValues = [localizations.all, localizations.ai, localizations.notPregnant];
+    selectedType ??= dropdownValues.first;
 
     List<Map<String, String>> filteredData = cattleData.where((item) {
       if (selectedType == localizations.all) return true;
-      return item["PregnancyStatus"] == selectedType;
+      return item["selectedMethod"] == selectedType;
     }).toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          localizations.insemination,
-          style: const TextStyle(color: Colors.white),
-        ),
+        title: Text(localizations.insemination, style: const TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
         leading: IconButton(
           icon: const CircleAvatar(
@@ -73,49 +105,40 @@ class _InseminationScreenState extends State<InseminationScreen> {
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.search, color: Colors.white),
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
-            // Dropdown for Pregnancy Status
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton2<String>(
-                  value: selectedType,
-                  isExpanded: true,
-                  items: dropdownValues
-                      .map((e) => DropdownMenuItem(
-                    value: e,
-                    child: Text(e),
-                  ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedType = value!;
-                    });
-                  },
-                ),
-              ),
+            DropdownButton<String>(
+              value: selectedType,
+              items: dropdownValues.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedType = value!;
+                });
+              },
             ),
             const SizedBox(height: 10),
-            // List of cattle data
             Expanded(
               child: ListView.builder(
                 itemCount: filteredData.length,
                 itemBuilder: (context, index) {
-                  return CattleCard(filteredData[index]);
+                  return CattleCard(
+                    data: filteredData[index],
+                    onEdit: () async {
+                      final updatedData = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddInsemination(existingData: filteredData[index]),
+                        ),
+                      );
+                      if (updatedData != null) {
+                        _addOrUpdateData(updatedData, index);
+                      }
+                    },
+                    onDelete: () => _deleteData(index),
+                  );
                 },
               ),
             ),
@@ -124,16 +147,14 @@ class _InseminationScreenState extends State<InseminationScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
-        ),
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          final newData = await Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const AddInsemination(),
-            ),
+            MaterialPageRoute(builder: (context) => const AddInsemination()),
           );
+          if (newData != null) {
+            _addOrUpdateData(newData);
+          }
         },
         child: const Icon(Icons.add, color: Colors.white),
       ),
@@ -141,140 +162,41 @@ class _InseminationScreenState extends State<InseminationScreen> {
   }
 }
 
-
 class CattleCard extends StatelessWidget {
   final Map<String, String> data;
-  CattleCard(this.data);
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  const CattleCard({required this.data, required this.onEdit, required this.onDelete, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
     return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      margin: EdgeInsets.symmetric(vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+      child: ListTile(
+        title: Text("Tag No: ${data['tagNo']}"),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("A.I. Date: ${data['inseminationDate']}"),
+            Text("Pregnancy Status: ${data['selectedMethod']}"),
+            Text("Bull Name: ${data['bullName']}"),
+            Text("Semen Company: ${data['semenCompany']}"),
+            Text("Lactation No: ${data['lactationNo']}"),
+          ],
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.edit, color: Colors.blue),
+              onPressed: onEdit,
             ),
-            padding: EdgeInsets.all(12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      localizations.cattleId,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      "tvbf",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Tag No",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      "frvf",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+            IconButton(
+              icon: const Icon(Icons.delete, color: Colors.red),
+              onPressed: onDelete,
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(12),
-            child: Column(
-              children: [
-                buildRow("A.I. Date", data["AIDate"]!, "Pregnancy Days",
-                    data["PregnancyDays"]!),
-                buildRow("Pregnancy Status", data["PregnancyStatus"]!,
-                    "Estimated Calving Date", data["CalvingDate"]!),
-                buildRow("Calving Due Days", data["CalvingDueDays"]!,
-                    "Lactation No", data["LactationNo"]!),
-                buildRow("Semen Company", data["SemenCompany"]!, "Bull Name",
-                    data["BullName"]!),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildRow(String label1, String value1, String label2, String value2) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label1,
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-                Text(
-                  value1,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  label2,
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-                Text(
-                  value2,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

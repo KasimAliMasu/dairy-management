@@ -1,225 +1,223 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class FeedCalculator extends StatefulWidget {
-  const FeedCalculator({super.key});
-
+class FeedCalculatorScreen extends StatefulWidget {
   @override
-  State<FeedCalculator> createState() => _FeedCalculatorState();
+  _FeedCalculatorScreenState createState() => _FeedCalculatorScreenState();
 }
 
-class _FeedCalculatorState extends State<FeedCalculator> {
-  String selectedFeedType = "Silage";
+class _FeedCalculatorScreenState extends State<FeedCalculatorScreen> {
+  final TextEditingController weightController = TextEditingController();
+  final TextEditingController milkYieldController = TextEditingController();
+  final TextEditingController fatController = TextEditingController();
+  final TextEditingController weekLactationController = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
+  String selectedFeedType = "Green";
+  List<String> summaries = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadSummaries();
+  }
+
+  Future<void> saveData() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    double weight = double.parse(weightController.text);
+    double milkYield = double.parse(milkYieldController.text);
+    double fat = double.parse(fatController.text);
+    int weekLactation = int.parse(weekLactationController.text);
+
+    String newSummary = """
+    Weight: ${weight}kg
+    Milk Yield: ${milkYield} ltr/day
+    Fat: ${fat}
+    Week of Lactation: $weekLactation
+    Feed Type: $selectedFeedType
+    """;
+
+    List<String> storedSummaries = prefs.getStringList("summaries") ?? [];
+    storedSummaries.add(newSummary);
+    await prefs.setStringList("summaries", storedSummaries);
+
+    setState(() {
+      summaries = storedSummaries;
+    });
+
+    weightController.clear();
+    milkYieldController.clear();
+    fatController.clear();
+    weekLactationController.clear();
+  }
+
+  Future<void> loadSummaries() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      summaries = prefs.getStringList("summaries") ?? [];
+    });
+  }
+
+  Future<void> removeSummary(int index) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> storedSummaries = prefs.getStringList("summaries") ?? [];
+
+    storedSummaries.removeAt(index);
+    await prefs.setStringList("summaries", storedSummaries);
+
+    setState(() {
+      summaries = storedSummaries;
+    });
+  }
+
+  void confirmDelete(int index) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Delete Summary"),
+        content: const Text("Are you sure you want to delete this summary?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              removeSummary(index);
+              Navigator.pop(context);
+            },
+            child: const Text("Delete", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        elevation: 0,
         leading: IconButton(
-          icon: CircleAvatar(
+          icon: const CircleAvatar(
             backgroundColor: Colors.white,
-            child: const Icon(
+            child: Icon(
               Icons.arrow_back,
               color: Colors.black,
             ),
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
-          AppLocalizations.of(context)!.feedCal,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
+        backgroundColor: Colors.blue,
+        title: const Text("Feed Calculator", style: TextStyle(color: Colors.white)),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                buildNumberField("Weight (kg)", weightController),
+                buildNumberField("Milk yield (ltr/day)", milkYieldController),
+                Row(
+                  children: [
+                    Expanded(child: buildNumberField("Fat ", fatController)),
+                    const SizedBox(width: 16),
+                    Expanded(child: buildNumberField("Week Of Lactation", weekLactationController)),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text("Select Feed Type:"),
+                Row(
+                  children: [
+                    buildRadioOption("Green"),
+                    buildRadioOption("Silage"),
+                    buildRadioOption("Both"),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Center(
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: saveData,
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                      child: const Text("Calculate", style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text("Summary:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                if (summaries.isEmpty)
+                  const Text("No data available", style: TextStyle(color: Colors.grey)),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: summaries.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      elevation: 3,
+                      margin: const EdgeInsets.symmetric(vertical: 5),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      child: ListTile(
+                        title: Text(
+                          summaries[index],
+                          style: const TextStyle(fontSize: 14, color: Colors.black87),
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => confirmDelete(index),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(40),
-                  topRight: Radius.circular(40),
-                ),
-              ),
-              child: Column(
-                children: [
-                  TextFormField(
-                    keyboardType: TextInputType.number,
-                    maxLength: 10,
-                    decoration: InputDecoration(
-                      counterText: "",
-                      labelText: AppLocalizations.of(context)!.weight,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  TextFormField(
-                    keyboardType: TextInputType.number,
-                    maxLength: 10,
-                    decoration: InputDecoration(
-                      counterText: "",
-                      labelText: AppLocalizations.of(context)!.milkYield,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  _buildRadioButtonRow(),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 15,
-                        horizontal: 100,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(
-                          Icons.calculate,
-                          size: 20,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          AppLocalizations.of(context)!.calculate,
-                          style: const TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.summary,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  _buildSummaryCard(),
-                  const SizedBox(height: 270),
-                ],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
 
-  Widget _buildRadioButtonRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildRadioButton(AppLocalizations.of(context)!.green),
-        const SizedBox(width: 10),
-        _buildRadioButton(AppLocalizations.of(context)!.silage),
-        const SizedBox(width: 10),
-        _buildRadioButton(AppLocalizations.of(context)!.both),
-      ],
+  Widget buildNumberField(String label, TextEditingController controller) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(labelText: label, border: const UnderlineInputBorder()),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Please enter $label";
+        }
+        if (double.tryParse(value) == null) {
+          return "Enter a valid number";
+        }
+        return null;
+      },
     );
   }
 
-  Widget _buildRadioButton(String value) {
+  Widget buildRadioOption(String value) {
     return Row(
       children: [
         Radio(
           value: value,
           groupValue: selectedFeedType,
-          activeColor: Colors.blue,
-          onChanged: (String? newValue) {
+          onChanged: (newValue) {
             setState(() {
-              selectedFeedType = newValue!;
+              selectedFeedType = newValue.toString();
             });
           },
         ),
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 14,
-          ),
-        ),
+        Text(value),
       ],
-    );
-  }
-
-  Widget _buildSummaryCard() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 1,
-            spreadRadius: 1,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 10),
-          _buildSummaryItem(
-              AppLocalizations.of(context)!.concentratedFeed, "10kg/day"),
-          _buildSummaryItem(AppLocalizations.of(context)!.silage, "29kg/day"),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSummaryItem(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
-          ),
-          Text(
-            value,
-            style: const TextStyle(
-              color: Colors.black54,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

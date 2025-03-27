@@ -56,42 +56,42 @@ class ConcentratedFeedComposition extends StatelessWidget {
                   topRight: Radius.circular(40),
                 ),
               ),
-              child: Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: ListView.builder(
-                    itemCount: feedComposition.length,
-                    itemBuilder: (context, index) {
-                      final item = feedComposition[index];
-                      return Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: ListView.builder(
+                  itemCount: feedComposition.length,
+                  itemBuilder: (context, index) {
+                    final item = feedComposition[index];
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
                                   item["name"]!,
                                   style: const TextStyle(
                                     fontSize: 16,
                                   ),
                                 ),
-                                Text(
-                                  item["quantity"]!,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              ),
+                              Text(
+                                item["quantity"]!,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                          if (index < feedComposition.length - 1)
-                            const Divider(color: Colors.grey),
-                        ],
-                      );
-                    },
-                  ),
+                        ),
+                        if (index < feedComposition.length - 1)
+                          const Divider(color: Colors.grey),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),
