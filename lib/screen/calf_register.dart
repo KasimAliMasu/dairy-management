@@ -283,21 +283,9 @@ class _CalfRegisterState extends State<CalfRegister> {
 
   Widget _buildEmptyState() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.pets, size: 60, color: Colors.grey),
-          const SizedBox(height: 20),
-          const Text(
-            "No Calf Records Found",
-            style: TextStyle(fontSize: 18, color: Colors.grey),
-          ),
-          const SizedBox(height: 10),
-          TextButton(
-            onPressed: _loadCalves,
-            child: const Text("Refresh"),
-          ),
-        ],
+      child: const Text(
+        "No Calf Records Found",
+        style: TextStyle(fontSize: 18, color: Colors.grey),
       ),
     );
   }
@@ -390,12 +378,7 @@ class _CalfRegisterState extends State<CalfRegister> {
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.pop(context),
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.refresh, color: Colors.white),
-              onPressed: _loadCalves,
-            ),
-          ],
+
         ),
         body: _buildBody(),
         floatingActionButton: FloatingActionButton(

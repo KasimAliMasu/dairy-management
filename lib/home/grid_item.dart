@@ -29,29 +29,53 @@ class GridItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
+          height: 150,
           decoration: const BoxDecoration(
-            color: Colors.white,
+            color: Colors.blueGrey,
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(15),
+              topLeft: Radius.circular(15),
+              bottomLeft: Radius.circular(15),
+              bottomRight: Radius.circular(15),
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black26,
-                blurRadius: 2,
-                offset: Offset(0, 2),
+                color: Colors.black54,
+                blurRadius: 3.0,
+                spreadRadius: 1.0,
+                offset: Offset(0, 0),
               ),
             ],
+
           ),
+
           child: Column(
             children: [
-              SizedBox(
-                width: 150,
+              Container(
+                width: 160,
                 height: 100,
-                child: Image.asset(imageUrl),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(15),
+                    topLeft: Radius.circular(15),
+                    bottomLeft: Radius.circular(15),
+                    bottomRight: Radius.circular(15),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Image.asset(imageUrl),
+                ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               Text(
                 title,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 14,
+                  color: Colors.white,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -88,12 +112,12 @@ class _GridScreenState extends State<GridScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>  FeedCalculatorScreen(),
+                    builder: (context) => FeedCalculatorScreen(),
                   ),
                 );
               },
               child: GridItem(
-                title:AppLocalizations.of(context)!.feedCal,
+                title: AppLocalizations.of(context)!.feedCal,
                 imageUrl: 'assets/image/feed_calculator.png',
               ),
             ),
@@ -121,7 +145,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title:AppLocalizations.of(context)!.insemination,
+                title: AppLocalizations.of(context)!.insemination,
                 imageUrl: 'assets/image/insemination_image.png',
               ),
             ),
@@ -135,7 +159,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title:AppLocalizations.of(context)!.calfRegister,
+                title: AppLocalizations.of(context)!.calfRegister,
                 imageUrl: 'assets/image/calf_register.png',
               ),
             ),
@@ -179,10 +203,12 @@ class _GridScreenState extends State<GridScreen> {
                               ),
                               const SizedBox(height: 10),
                               RadioListTile(
-                                title:   Text(
-                                  AppLocalizations.of(context)!.dryCowFeedFormula,
+                                title: Text(
+                                  AppLocalizations.of(context)!
+                                      .dryCowFeedFormula,
                                 ),
-                                value:     AppLocalizations.of(context)!.dryCowFeedFormula,
+                                value: AppLocalizations.of(context)!
+                                    .dryCowFeedFormula,
                                 groupValue: _selectedFormula,
                                 onChanged: (value) {
                                   setModalState(() {
@@ -191,10 +217,12 @@ class _GridScreenState extends State<GridScreen> {
                                 },
                               ),
                               RadioListTile(
-                                title:   Text(
-                                  AppLocalizations.of(context)!.concentratedFeedComposition,
+                                title: Text(
+                                  AppLocalizations.of(context)!
+                                      .concentratedFeedComposition,
                                 ),
-                                value: AppLocalizations.of(context)!.concentratedFeedComposition,
+                                value: AppLocalizations.of(context)!
+                                    .concentratedFeedComposition,
                                 groupValue: _selectedFormula,
                                 onChanged: (value) {
                                   setModalState(() {
@@ -208,7 +236,8 @@ class _GridScreenState extends State<GridScreen> {
                                   Navigator.pop(context);
 
                                   if (_selectedFormula ==
-                                      AppLocalizations.of(context)!.dryCowFeedFormula) {
+                                      AppLocalizations.of(context)!
+                                          .dryCowFeedFormula) {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -217,7 +246,8 @@ class _GridScreenState extends State<GridScreen> {
                                       ),
                                     );
                                   } else if (_selectedFormula ==
-                                      AppLocalizations.of(context)!.concentratedFeedComposition) {
+                                      AppLocalizations.of(context)!
+                                          .concentratedFeedComposition) {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -256,7 +286,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title:AppLocalizations.of(context)!.feedFormula,
+                title: AppLocalizations.of(context)!.feedFormula,
                 imageUrl: 'assets/image/cow_image.jpeg',
               ),
             ),
@@ -270,7 +300,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title:AppLocalizations.of(context)!.vaccination,
+                title: AppLocalizations.of(context)!.vaccination,
                 imageUrl: 'assets/image/vaccination.png',
               ),
             ),
@@ -285,7 +315,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title:AppLocalizations.of(context)!.calfGrowth,
+                title: AppLocalizations.of(context)!.calfGrowth,
                 imageUrl: 'assets/image/cow_growth.png',
               ),
             ),
@@ -299,7 +329,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title:AppLocalizations.of(context)!.calvingRegister,
+                title: AppLocalizations.of(context)!.calvingRegister,
                 imageUrl: 'assets/image/calving_register.png',
               ),
             ),
@@ -313,7 +343,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title:AppLocalizations.of(context)!.deworming,
+                title: AppLocalizations.of(context)!.deworming,
                 imageUrl: 'assets/image/deworming.png',
               ),
             ),
@@ -327,7 +357,7 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title:AppLocalizations.of(context)!.heatRegister,
+                title: AppLocalizations.of(context)!.heatRegister,
                 imageUrl: 'assets/image/Heat_Register.png',
               ),
             ),
@@ -341,12 +371,10 @@ class _GridScreenState extends State<GridScreen> {
                 );
               },
               child: GridItem(
-                title:AppLocalizations.of(context)!.milkLtr,
+                title: AppLocalizations.of(context)!.milkLtr,
                 imageUrl: 'assets/image/img_cow (1).png',
               ),
             ),
-
-
           ],
         ),
       ),

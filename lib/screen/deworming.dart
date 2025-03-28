@@ -26,10 +26,11 @@ class _DewormingScreenState extends State<DewormingScreen> {
     if (storedCalves != null) {
       try {
         List<dynamic> decodedList = json.decode(storedCalves);
-        List<Map<String, String>> parsedList = decodedList.map((item) =>
-            (item as Map<String, dynamic>).map(
+        List<Map<String, String>> parsedList = decodedList
+            .map((item) => (item as Map<String, dynamic>).map(
                   (key, value) => MapEntry(key, value?.toString() ?? ''),
-            )).toList();
+                ))
+            .toList();
 
         setState(() {
           calves = parsedList;
@@ -89,6 +90,13 @@ class _DewormingScreenState extends State<DewormingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const CircleAvatar(
+            backgroundColor: Colors.white,
+            child: Icon(Icons.arrow_back, color: Colors.black),
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: const Text(
           "Deworming Records",
           style: TextStyle(color: Colors.white),
@@ -98,48 +106,52 @@ class _DewormingScreenState extends State<DewormingScreen> {
       body: calves.isEmpty
           ? const Center(child: Text("No records found"))
           : ListView.builder(
-        itemCount: calves.length,
-        itemBuilder: (context, index) {
-          final calf = calves[index];
-          return Card(
-            margin: const EdgeInsets.all(8.0),
-            child: ListTile(
-              title: Text("Cattle ID: ${calf['cattle_id'] ?? 'N/A'}"),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Deworming Date: ${calf['deworming_date'] ?? 'N/A'}"),
-                  Text("Medicine Company: ${calf['deworming_medicine_company'] ?? 'N/A'}"),
-                  Text("Medicine Name: ${calf['deworming_medicine_name'] ?? 'N/A'}"),
-                ],
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () async {
-                      final updatedCalf = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AddDeworming(existingData: calf),
+              itemCount: calves.length,
+              itemBuilder: (context, index) {
+                final calf = calves[index];
+                return Card(
+                  margin: const EdgeInsets.all(8.0),
+                  child: ListTile(
+                    title: Text("Cattle ID: ${calf['cattle_id'] ?? 'N/A'}"),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            "Deworming Date: ${calf['deworming_date'] ?? 'N/A'}"),
+                        Text(
+                            "Medicine Company: ${calf['deworming_medicine_company'] ?? 'N/A'}"),
+                        Text(
+                            "Medicine Name: ${calf['deworming_medicine_name'] ?? 'N/A'}"),
+                      ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () async {
+                            final updatedCalf = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    AddDeworming(existingData: calf),
+                              ),
+                            );
+                            if (updatedCalf != null) {
+                              _editCalf(index, updatedCalf);
+                            }
+                          },
                         ),
-                      );
-                      if (updatedCalf != null) {
-                        _editCalf(index, updatedCalf);
-                      }
-                    },
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => _deleteCalf(index),
+                        ),
+                      ],
+                    ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _deleteCalf(index),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
-          );
-        },
-      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () async {
@@ -173,17 +185,22 @@ class AddDeworming extends StatefulWidget {
 class _AddDewormingState extends State<AddDeworming> {
   final TextEditingController cattleIdController = TextEditingController();
   final TextEditingController dewormingDateController = TextEditingController();
-  final TextEditingController dewormingMedicineCompanyController = TextEditingController();
-  final TextEditingController dewormingMedicineNameController = TextEditingController();
+  final TextEditingController dewormingMedicineCompanyController =
+      TextEditingController();
+  final TextEditingController dewormingMedicineNameController =
+      TextEditingController();
 
   @override
   void initState() {
     super.initState();
     if (widget.existingData != null) {
       cattleIdController.text = widget.existingData!['cattle_id'] ?? '';
-      dewormingDateController.text = widget.existingData!['deworming_date'] ?? '';
-      dewormingMedicineCompanyController.text = widget.existingData!['deworming_medicine_company'] ?? '';
-      dewormingMedicineNameController.text = widget.existingData!['deworming_medicine_name'] ?? '';
+      dewormingDateController.text =
+          widget.existingData!['deworming_date'] ?? '';
+      dewormingMedicineCompanyController.text =
+          widget.existingData!['deworming_medicine_company'] ?? '';
+      dewormingMedicineNameController.text =
+          widget.existingData!['deworming_medicine_name'] ?? '';
     }
   }
 
@@ -225,14 +242,28 @@ class _AddDewormingState extends State<AddDeworming> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Add Deworming")),
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        leading: IconButton(
+          icon: const CircleAvatar(
+            backgroundColor: Colors.white,
+            child: Icon(Icons.arrow_back, color: Colors.black),
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          "Add Deworming",
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
             _buildTextField(cattleIdController, "Cattle ID"),
             _buildDateField(dewormingDateController, "Deworming Date"),
-            _buildTextField(dewormingMedicineCompanyController, "Medicine Company"),
+            _buildTextField(
+                dewormingMedicineCompanyController, "Medicine Company"),
             _buildTextField(dewormingMedicineNameController, "Medicine Name"),
             ElevatedButton(onPressed: _submitForm, child: const Text("Submit"))
           ],
@@ -249,13 +280,13 @@ class _AddDewormingState extends State<AddDeworming> {
         decoration: InputDecoration(
           labelText: label,
           border: const OutlineInputBorder(),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         ),
       ),
     );
   }
 
-  /// Builds a text field for date selection with a calendar picker
   Widget _buildDateField(TextEditingController controller, String label) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
@@ -264,7 +295,8 @@ class _AddDewormingState extends State<AddDeworming> {
         decoration: InputDecoration(
           labelText: label,
           border: const OutlineInputBorder(),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
           suffixIcon: const Icon(Icons.calendar_today),
         ),
         readOnly: true,

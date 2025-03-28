@@ -17,7 +17,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        return await _showExitPopup(context) ?? false;
+        bool? shouldExit = await _showExitPopup(context);
+        return shouldExit;
       },
       child: Scaffold(
         backgroundColor: Colors.blue,
@@ -99,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: SizedBox(
                   height: 650,
                   child: Padding(
-                    padding: const EdgeInsets.all(10.0),
+                    padding: const EdgeInsets.all(5.0),
                     child: GridScreen(),
                   ),
                 ),
@@ -112,22 +113,29 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-Future<bool?> _showExitPopup(BuildContext context) async {
-  return showDialog<bool>(
+/// Show exit confirmation popup when back button is pressed
+Future<bool> _showExitPopup(BuildContext context) async {
+  return await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
       title: Text(AppLocalizations.of(context)!.exitApp),
       content: Text(AppLocalizations.of(context)!.areYouSureYouWantToExit),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Cancel'),
+          onPressed: () => Navigator.of(context).pop(false), // Cancel
+          child: const Text(
+            'Cancel',
+            style: TextStyle(color: Colors.blue, fontSize: 16),
+          ),
         ),
         TextButton(
-          onPressed: () => SystemNavigator.pop(),
-          child: const Text('Exit'),
+          onPressed: () => SystemNavigator.pop(), // Exit app
+          child: const Text(
+            'Exit',
+            style: TextStyle(color: Colors.red, fontSize: 16),
+          ),
         ),
       ],
     ),
-  );
+  ) ?? false; // Return false if dismissed
 }

@@ -34,21 +34,16 @@ class _CalvingRegisterState extends State<CalvingRegister> {
       final String? calvesString = prefs.getString('calves');
 
       if (calvesString != null && calvesString.isNotEmpty) {
-        final decodedData = jsonDecode(calvesString) as List;
+        final List<dynamic> decodedData = jsonDecode(calvesString);
 
-        final parsedList = decodedData
-            .whereType<Map<String, dynamic>>()
-            .map((item) => item.map(
-              (k, v) => MapEntry(k, v?.toString() ?? ''), // Ensures no null values
-        ))
-            .toList();
-
-        // Ensure mandatory fields are present
-        final validCalves = parsedList.where((calf) {
-          return calf['cattleId']?.isNotEmpty ?? false;
+        final parsedList = decodedData.map((item) {
+          if (item is Map<String, dynamic>) {
+            return item.map((key, value) => MapEntry(key, value?.toString() ?? ''));
+          }
+          return <String, String>{};
         }).toList();
 
-        setState(() => calves = validCalves);
+        setState(() => calves = parsedList.where((calf) => calf['cattleId']?.isNotEmpty ?? false).toList());
       } else {
         setState(() => calves = []);
       }
@@ -66,7 +61,7 @@ class _CalvingRegisterState extends State<CalvingRegister> {
   Future<void> _saveCalves() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('calves', json.encode(calves));
+      await prefs.setString('calves', jsonEncode(calves));
     } catch (e) {
       debugPrint('Error saving calves: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -76,17 +71,7 @@ class _CalvingRegisterState extends State<CalvingRegister> {
   }
 
   void _addOrUpdateCalf(Map<String, String> calfData, {int? index}) {
-    // Ensure required fields have values
-    final Map<String, String> newCalfData = {
-      'cattleId': calfData['cattleId'] ?? '',
-      'calvingDate': calfData['calvingDate'] ?? 'Unknown',
-      'lactationNo': calfData['lactationNo'] ?? '0',
-      'calfGender': calfData['calfGender'] ?? 'Unknown',
-      'calfName': calfData['calfName'] ?? 'Unnamed',
-      'selectedAnimalImage': calfData['selectedAnimalImage'] ?? '',
-    };
-
-    if (newCalfData['cattleId']!.isEmpty) {
+    if (calfData['cattleId']?.isEmpty ?? true) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Cattle ID is required')),
       );
@@ -95,9 +80,9 @@ class _CalvingRegisterState extends State<CalvingRegister> {
 
     setState(() {
       if (index == null) {
-        calves.add(newCalfData);
+        calves.add(calfData);
       } else {
-        calves[index] = newCalfData;
+        calves[index] = calfData;
       }
       _saveCalves();
     });
@@ -149,7 +134,7 @@ class _CalvingRegisterState extends State<CalvingRegister> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _hasError
-          ? Center(child: Text('error_loading_data'))
+          ? Center(child: Text( 'error_loading_data'))
           : calves.isEmpty
           ? Center(child: Text(locale.noRecordsFound))
           : ListView.builder(
@@ -162,14 +147,14 @@ class _CalvingRegisterState extends State<CalvingRegister> {
               leading: (imageUrl != null && imageUrl.isNotEmpty)
                   ? CircleAvatar(radius: 25, backgroundImage: NetworkImage(imageUrl))
                   : const Icon(Icons.image_not_supported, color: Colors.grey, size: 50),
-              title: Text("${locale.cattleId}: ${calves[index]['cattleId']}"),
+              title: Text("${locale.cattleId}: ${calves[index]['cattleId'] ?? 'N/A'}"),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("${locale.calvingDate}: ${calves[index]['calvingDate']}"),
-                  Text("${locale.lactationNo}: ${calves[index]['lactationNo']}"),
-                  Text("${locale.calf_gender}: ${calves[index]['calfGender']}"),
-                  Text("${locale.calf_name}: ${calves[index]['calfName']}"),
+                  Text("${locale.calvingDate}: ${calves[index]['calvingDate'] ?? 'Unknown'}"),
+                  Text("${locale.lactationNo}: ${calves[index]['lactationNo'] ?? '0'}"),
+                  Text("${locale.calf_gender}: ${calves[index]['calfGender'] ?? 'Unknown'}"),
+                  Text("${locale.calf_name}: ${calves[index]['calfName'] ?? 'Unnamed'}"),
                 ],
               ),
               trailing: Row(
