@@ -77,7 +77,7 @@ class _AddAnimalListState extends State<AddAnimalList> {
         title: Text(widget.existingData == null
             ? localizations.addAnimal
             :  'Edit Animal'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff6C60FE),
         foregroundColor: Colors.white,
       ),
       body: Padding(
@@ -115,7 +115,7 @@ class _AddAnimalListState extends State<AddAnimalList> {
               const SizedBox(height: 10),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Color(0xff6C60FE),
                   padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 100),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
@@ -141,7 +141,9 @@ class _AddAnimalListState extends State<AddAnimalList> {
       controller: controller,
       decoration: InputDecoration(
         hintText: label,
-        border: const OutlineInputBorder(),
+        border:  OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
     );
   }

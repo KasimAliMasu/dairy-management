@@ -3,11 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'NotificationService.dart';
 
-void main() {
+
+
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.init();
   runApp(
     ChangeNotifierProvider(
       create: (context) => LocaleProvider(),
+
       child: const MyApp(),
     ),
   );

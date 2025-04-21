@@ -28,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Stack(
         children: [
           Container(
-            color: Colors.blue,
+            color:Color(0xff6C60FE),
             width: double.infinity,
             height: double.infinity,
             child: Text('Milk'),

@@ -93,7 +93,7 @@ class _HeatRegisterState extends State<HeatRegister> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(t.heatRegister,style: TextStyle(color: Colors.white),),
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff6C60FE),
       ),
       body: records.isEmpty
           ? Center(child: Text(t.noRecordsFound))
@@ -146,7 +146,7 @@ class _HeatRegisterState extends State<HeatRegister> {
               },
             ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff6C60FE),
         onPressed: () async {
           final newRecord = await Navigator.push(
             context,
@@ -262,7 +262,7 @@ class _AddHeatState extends State<AddHeat> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff6C60FE),
           leading: IconButton(
             icon: const CircleAvatar(
               backgroundColor: Colors.white,
@@ -274,7 +274,7 @@ class _AddHeatState extends State<AddHeat> {
               ? "Add Heat Record"
               : "Edit Heat Record",style: TextStyle(color: Colors.white),)),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(15.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -282,9 +282,10 @@ class _AddHeatState extends State<AddHeat> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                     controller: cattleIdController,
-                    decoration: const InputDecoration(
+                    decoration:
+                    InputDecoration(
                       labelText: "Cattle ID",
-                      border:   OutlineInputBorder(),
+                      border:   OutlineInputBorder( borderRadius: BorderRadius.circular(10),),
                       contentPadding:   EdgeInsets.symmetric(
                           horizontal: 10, vertical: 15),
                     )),
@@ -293,9 +294,9 @@ class _AddHeatState extends State<AddHeat> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   controller: heatDateController,
-                  decoration: const InputDecoration(
+                  decoration:   InputDecoration(
                     labelText: "Heat Date",
-                    border:   OutlineInputBorder(),
+                    border:   OutlineInputBorder( borderRadius: BorderRadius.circular(10),),
                     contentPadding:   EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                     suffixIcon: Icon(Icons.calendar_today),
                   ),
@@ -309,7 +310,7 @@ class _AddHeatState extends State<AddHeat> {
                   controller: symptomsController,
                   decoration: InputDecoration(
                     labelText: "Symptoms",
-                    border: const OutlineInputBorder(),
+                    border:   OutlineInputBorder( borderRadius: BorderRadius.circular(10),),
                     contentPadding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                   ),
@@ -319,9 +320,9 @@ class _AddHeatState extends State<AddHeat> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                     controller: diagnosisController,
-                    decoration: const InputDecoration(
+                    decoration:   InputDecoration(
                       labelText: "Diagnosis",
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder( borderRadius: BorderRadius.circular(10),),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                     )),
@@ -330,9 +331,9 @@ class _AddHeatState extends State<AddHeat> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                     controller: treatmentController,
-                    decoration: const InputDecoration(
+                    decoration:   InputDecoration(
                       labelText: "Treatment",
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder( borderRadius: BorderRadius.circular(10),),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                     )),
@@ -341,9 +342,9 @@ class _AddHeatState extends State<AddHeat> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                     controller: resultController,
-                    decoration: const InputDecoration(
+                    decoration:   InputDecoration(
                       labelText: "Result",
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder( borderRadius: BorderRadius.circular(10),),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                     )),
@@ -352,9 +353,9 @@ class _AddHeatState extends State<AddHeat> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                     controller: costOfTreatmentController,
-                    decoration: const InputDecoration(
+                    decoration:   InputDecoration(
                       labelText: "Cost of Treatment",
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder( borderRadius: BorderRadius.circular(10),),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                     )),
@@ -363,9 +364,9 @@ class _AddHeatState extends State<AddHeat> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                     controller: noteController,
-                    decoration: const InputDecoration(
+                    decoration:   InputDecoration(
                       labelText: "Note",
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder( borderRadius: BorderRadius.circular(10),),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                     )),
@@ -376,7 +377,7 @@ class _AddHeatState extends State<AddHeat> {
                 child: ElevatedButton(
                   onPressed: _submitForm,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor:  Color(0xff6C60FE),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

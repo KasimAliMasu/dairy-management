@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../insemination/add_insemination.dart';
+
 
 class InseminationScreen extends StatefulWidget {
   const InseminationScreen({super.key});
@@ -45,10 +45,8 @@ class _InseminationScreenState extends State<InseminationScreen> {
   void _addOrUpdateData(Map<String, String> newData, [int? index]) {
     setState(() {
       if (index != null) {
-        // Update existing data
         cattleData[index] = newData;
       } else {
-        // Add new data
         cattleData.add(newData);
       }
     });
@@ -85,19 +83,18 @@ class _InseminationScreenState extends State<InseminationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
-    final dropdownValues = [localizations.all, localizations.ai, localizations.notPregnant];
+    final dropdownValues = ['All', 'A.I.', 'Not Pregnant'];
     selectedType ??= dropdownValues.first;
 
     List<Map<String, String>> filteredData = cattleData.where((item) {
-      if (selectedType == localizations.all) return true;
+      if (selectedType == 'All') return true;
       return item["selectedMethod"] == selectedType;
     }).toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(localizations.insemination, style: const TextStyle(color: Colors.white)),
-        backgroundColor: Colors.blue,
+        title: const Text("Insemination", style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xff6C60FE),
         leading: IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
@@ -134,10 +131,14 @@ class _InseminationScreenState extends State<InseminationScreen> {
                         ),
                       );
                       if (updatedData != null) {
-                        _addOrUpdateData(updatedData, index);
+                        int actualIndex = cattleData.indexOf(filteredData[index]);
+                        _addOrUpdateData(updatedData, actualIndex);
                       }
                     },
-                    onDelete: () => _deleteData(index),
+                    onDelete: () {
+                      int actualIndex = cattleData.indexOf(filteredData[index]);
+                      _deleteData(actualIndex);
+                    },
                   );
                 },
               ),
@@ -146,7 +147,7 @@ class _InseminationScreenState extends State<InseminationScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(0xff6C60FE),
         onPressed: () async {
           final newData = await Navigator.push(
             context,

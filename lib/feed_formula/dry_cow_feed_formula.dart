@@ -22,7 +22,7 @@ class DryCowFeedFormula extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: Colors.blue,
+      backgroundColor: Color(0xff6C60FE),
       appBar: AppBar(
         title: Text(localizations.dryCowFeedFormula),
         leading: IconButton(
@@ -35,7 +35,7 @@ class DryCowFeedFormula extends StatelessWidget {
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff6C60FE),
         foregroundColor: Colors.white,
         elevation: 0,
       ),

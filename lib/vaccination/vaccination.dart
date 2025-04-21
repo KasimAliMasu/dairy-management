@@ -93,7 +93,7 @@ class _VaccinationRegisterState extends State<VaccinationRegister> {
           localizations.vaccination,
           style: const TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff6C60FE),
         leading: IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
@@ -158,7 +158,7 @@ class _VaccinationRegisterState extends State<VaccinationRegister> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff6C60FE),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         onPressed: () async {
           final newVaccination = await Navigator.push(

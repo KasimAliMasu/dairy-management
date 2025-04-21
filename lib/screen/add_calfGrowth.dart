@@ -62,7 +62,7 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
     final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff6C60FE),
         title: Text(
             widget.initialData != null
                 ? 'editCalfGrowth'
@@ -77,7 +77,7 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(15.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -93,7 +93,7 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
                 child: ElevatedButton(
                   onPressed: _submitForm,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Color(0xff6C60FE),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                     padding: const EdgeInsets.symmetric(vertical: 15),
@@ -113,7 +113,9 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
   Widget _buildDropdown() {
     return DropdownButtonFormField2<String>(
       value: _selectedAnimal,
-      decoration: const InputDecoration(border: OutlineInputBorder()),
+      decoration:  InputDecoration(border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+      )),
       hint: Text(AppLocalizations.of(context)!.selectAnimalType),
       items: animalList.map((animal) {
         final name = animal['name'] ?? 'Unknown';
@@ -153,7 +155,9 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
         readOnly: true,
         decoration: InputDecoration(
           hintText: AppLocalizations.of(context)!.date,
-          border: const OutlineInputBorder(),
+          border:  OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
           suffixIcon: IconButton(
             icon: const Icon(Icons.calendar_today),
             onPressed: _selectDate,
@@ -185,7 +189,9 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
         controller: controller,
         decoration: InputDecoration(
           hintText: label,
-          border: const OutlineInputBorder(),
+          border:  OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       ),
     );
@@ -200,7 +206,9 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         decoration: InputDecoration(
           hintText: label,
-          border: const OutlineInputBorder(),
+          border:  OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       ),
     );

@@ -10,29 +10,34 @@ import '../screen/heat_register.dart';
 import '../screen/insemination.dart';
 import '../screen/milk_ltr.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import '../vaccination/vaccination.dart';
 
 class GridItem extends StatelessWidget {
   final String title;
   final String imageUrl;
+  final Color containerColor;
+  final Color textColor;
 
   const GridItem({
     super.key,
     required this.title,
     required this.imageUrl,
+    this.containerColor = Colors.blueGrey,
+    this.textColor = Colors.white,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
           height: 150,
-          decoration: const BoxDecoration(
-            color: Colors.blueGrey,
-            borderRadius: BorderRadius.only(
+          decoration: BoxDecoration(
+            color: containerColor,
+            borderRadius: const BorderRadius.only(
               topRight: Radius.circular(15),
               topLeft: Radius.circular(15),
               bottomLeft: Radius.circular(15),
@@ -40,24 +45,21 @@ class GridItem extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black54,
+                color: Colors.black.withOpacity(0.2),
                 blurRadius: 3.0,
                 spreadRadius: 1.0,
-                offset: Offset(0, 0),
+                offset: const Offset(0, 2),
               ),
             ],
-
           ),
-
           child: Column(
             children: [
               Container(
                 width: 160,
                 height: 100,
                 decoration: BoxDecoration(
-                  color: Colors.white,
-
-                  borderRadius: BorderRadius.only(
+                  color:Colors.white,
+                  borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(15),
                     topLeft: Radius.circular(15),
                     bottomLeft: Radius.circular(15),
@@ -73,9 +75,9 @@ class GridItem extends StatelessWidget {
               Text(
                 title,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
-                  color: Colors.white,
+                  color: textColor,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -97,9 +99,23 @@ class GridScreen extends StatefulWidget {
 
 class _GridScreenState extends State<GridScreen> {
   String _selectedFormula = "Dry Cow Feed Formula (100kg)";
+  final List<Color> _gridColors = [
+    const Color(0xFF6C60FE), // Purple
+    const Color(0xFF2EC4B6), // Teal
+    const Color(0xFFE71D36), // Red
+    const Color(0xFFFF9F1C), // Orange
+    const Color(0xFF011627), // Dark Blue
+    const Color(0xFF2D3047), // Dark Purple
+    const Color(0xFF419D78), // Green
+    const Color(0xFFD7263D), // Dark Red
+    const Color(0xFFF46036), // Bright Orange
+    const Color(0xFF1B998B), // Blue-Green
+  ];
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return SizedBox(
       height: 550,
       child: Padding(
@@ -119,22 +135,9 @@ class _GridScreenState extends State<GridScreen> {
               child: GridItem(
                 title: AppLocalizations.of(context)!.feedCal,
                 imageUrl: 'assets/image/feed_calculator.png',
+                containerColor: _gridColors[0],
               ),
             ),
-            // InkWell(
-            //   onTap: () {
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //         builder: (context) => AnimalList(),
-            //       ),
-            //     );
-            //   },
-            //   child: GridItem(
-            //     title:AppLocalizations.of(context)!.animalList,
-            //     imageUrl: 'assets/image/img_cow (1).png',
-            //   ),
-            // ),
             InkWell(
               onTap: () {
                 Navigator.push(
@@ -147,6 +150,7 @@ class _GridScreenState extends State<GridScreen> {
               child: GridItem(
                 title: AppLocalizations.of(context)!.insemination,
                 imageUrl: 'assets/image/insemination_image.png',
+                containerColor: _gridColors[1],
               ),
             ),
             InkWell(
@@ -161,13 +165,14 @@ class _GridScreenState extends State<GridScreen> {
               child: GridItem(
                 title: AppLocalizations.of(context)!.calfRegister,
                 imageUrl: 'assets/image/calf_register.png',
+                containerColor: _gridColors[2],
               ),
             ),
             InkWell(
               onTap: () {
                 showModalBottomSheet(
                   context: context,
-                  backgroundColor: Colors.white,
+                  backgroundColor: theme.colorScheme.background,
                   elevation: 10,
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.vertical(
@@ -186,17 +191,19 @@ class _GridScreenState extends State<GridScreen> {
                             children: [
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text(
+                                  Text(
                                     "Choose Feed Formula",
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
+                                      color: theme.colorScheme.onSurface,
                                     ),
                                   ),
                                   IconButton(
-                                    icon: const Icon(Icons.close),
+                                    icon: Icon(Icons.close,
+                                        color: theme.colorScheme.onSurface),
                                     onPressed: () => Navigator.pop(context),
                                   ),
                                 ],
@@ -206,6 +213,8 @@ class _GridScreenState extends State<GridScreen> {
                                 title: Text(
                                   AppLocalizations.of(context)!
                                       .dryCowFeedFormula,
+                                  style: TextStyle(
+                                      color: theme.colorScheme.onSurface),
                                 ),
                                 value: AppLocalizations.of(context)!
                                     .dryCowFeedFormula,
@@ -220,6 +229,8 @@ class _GridScreenState extends State<GridScreen> {
                                 title: Text(
                                   AppLocalizations.of(context)!
                                       .concentratedFeedComposition,
+                                  style: TextStyle(
+                                      color: theme.colorScheme.onSurface),
                                 ),
                                 value: AppLocalizations.of(context)!
                                     .concentratedFeedComposition,
@@ -258,20 +269,20 @@ class _GridScreenState extends State<GridScreen> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue,
+                                  backgroundColor:  Color(0xff6C60FE),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                 ),
-                                child: const Center(
+                                child: Center(
                                   child: Padding(
                                     padding:
-                                        EdgeInsets.symmetric(vertical: 12.0),
+                                    EdgeInsets.symmetric(vertical: 12.0),
                                     child: Text(
                                       "Continue",
                                       style: TextStyle(
                                         fontSize: 16,
-                                        color: Colors.white,
+                                        color: theme.colorScheme.onPrimary,
                                       ),
                                     ),
                                   ),
@@ -288,6 +299,7 @@ class _GridScreenState extends State<GridScreen> {
               child: GridItem(
                 title: AppLocalizations.of(context)!.feedFormula,
                 imageUrl: 'assets/image/cow_image.jpeg',
+                containerColor: _gridColors[3],
               ),
             ),
             InkWell(
@@ -302,9 +314,9 @@ class _GridScreenState extends State<GridScreen> {
               child: GridItem(
                 title: AppLocalizations.of(context)!.vaccination,
                 imageUrl: 'assets/image/vaccination.png',
+                containerColor: _gridColors[4],
               ),
             ),
-
             InkWell(
               onTap: () {
                 Navigator.push(
@@ -317,6 +329,7 @@ class _GridScreenState extends State<GridScreen> {
               child: GridItem(
                 title: AppLocalizations.of(context)!.calfGrowth,
                 imageUrl: 'assets/image/cow_growth.png',
+                containerColor: _gridColors[5],
               ),
             ),
             InkWell(
@@ -331,6 +344,7 @@ class _GridScreenState extends State<GridScreen> {
               child: GridItem(
                 title: AppLocalizations.of(context)!.calvingRegister,
                 imageUrl: 'assets/image/calving_register.png',
+                containerColor: _gridColors[6],
               ),
             ),
             InkWell(
@@ -345,6 +359,7 @@ class _GridScreenState extends State<GridScreen> {
               child: GridItem(
                 title: AppLocalizations.of(context)!.deworming,
                 imageUrl: 'assets/image/deworming.png',
+                containerColor: _gridColors[7],
               ),
             ),
             InkWell(
@@ -359,6 +374,7 @@ class _GridScreenState extends State<GridScreen> {
               child: GridItem(
                 title: AppLocalizations.of(context)!.heatRegister,
                 imageUrl: 'assets/image/Heat_Register.png',
+                containerColor: _gridColors[8],
               ),
             ),
             InkWell(
@@ -373,6 +389,7 @@ class _GridScreenState extends State<GridScreen> {
               child: GridItem(
                 title: AppLocalizations.of(context)!.milkLtr,
                 imageUrl: 'assets/image/img_cow (1).png',
+                containerColor: _gridColors[9],
               ),
             ),
           ],

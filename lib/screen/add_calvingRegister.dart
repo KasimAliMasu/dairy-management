@@ -47,7 +47,7 @@ class _AddCalvingRegisterState extends State<AddCalvingRegister> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff6C60FE),
         leading: IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
@@ -58,7 +58,7 @@ class _AddCalvingRegisterState extends State<AddCalvingRegister> {
         title: Text(locale.add_calving_record, style: const TextStyle(color: Colors.white)),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(15.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -71,8 +71,9 @@ class _AddCalvingRegisterState extends State<AddCalvingRegister> {
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
+                height: 50,
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                  style: ElevatedButton.styleFrom(backgroundColor:Color(0xff6C60FE),),
                   onPressed: _submitForm,
                   child: Text(locale.submit, style: const TextStyle(color: Colors.white)),
                 ),
@@ -89,8 +90,10 @@ class _AddCalvingRegisterState extends State<AddCalvingRegister> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: DropdownButtonFormField2<String>(
         value: _selectedAnimal,
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
+        decoration:  InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         ),
         hint: Text(AppLocalizations.of(context)!.selectAnimalType),
@@ -124,7 +127,9 @@ class _AddCalvingRegisterState extends State<AddCalvingRegister> {
         readOnly: true,
         decoration: InputDecoration(
           hintText: label,
-          border: const OutlineInputBorder(),
+          border:  OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
           suffixIcon: IconButton(
             icon: const Icon(Icons.calendar_today, color: Colors.black),
             onPressed: () => _selectDate(context),
@@ -141,7 +146,9 @@ class _AddCalvingRegisterState extends State<AddCalvingRegister> {
         controller: controller,
         decoration: InputDecoration(
           hintText: label,
-          border: const OutlineInputBorder(),
+          border:  OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       ),
     );

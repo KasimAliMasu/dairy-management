@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -24,17 +25,17 @@ class _AddCalfState extends State<AddCalf> {
     {
       'name': 'Cow1',
       'image':
-      'https://img.freepik.com/free-psd/beautiful-cow-picture_23-2151840250.jpg'
+          'https://img.freepik.com/free-psd/beautiful-cow-picture_23-2151840250.jpg?ga=GA1.1.877359944.1738660132&semt=ais_hybrid'
     },
     {
       'name': 'Cow2',
       'image':
-      'https://img.freepik.com/premium-photo/cow-is-road-rural-thailand_33736-1588.jpg'
+          'https://img.freepik.com/premium-photo/cow-is-road-rural-thailand_33736-1588.jpg?ga=GA1.1.877359944.1738660132&semt=ais_hybrid'
     },
     {
       'name': 'Cow3',
       'image':
-      'https://img.freepik.com/premium-photo/cow-field_1048944-9365469.jpg'
+          'https://img.freepik.com/premium-photo/cow-field_1048944-9365469.jpg?ga=GA1.1.877359944.1738660132&semt=ais_hybrid'
     },
   ];
 
@@ -61,7 +62,7 @@ class _AddCalfState extends State<AddCalf> {
 
     if (pickedDate != null) {
       setState(() {
-        birthDateController.text = DateFormat('dd/MM/yyyy').format(pickedDate);
+        birthDateController.text = DateFormat('dd-MM-yyyy').format(pickedDate);
       });
     }
   }
@@ -102,9 +103,11 @@ class _AddCalfState extends State<AddCalf> {
       onTap: onTap,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        border: OutlineInputBorder(
+
+            borderRadius: BorderRadius.circular(10)),
         contentPadding:
-        const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+            const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
       ),
     );
   }
@@ -113,23 +116,29 @@ class _AddCalfState extends State<AddCalf> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+       backgroundColor: Color(0xff6C60FE),
         leading: IconButton(
           icon: const CircleAvatar(
-            backgroundColor: Colors.white,
+            backgroundColor:Colors.white,
             child: Icon(Icons.arrow_back, color: Colors.black),
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(widget.isEditing ? "Edit Calf" : "Add Calf",
-            style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.blue,
+        title: Text(
+          widget.isEditing ? "Edit Calf" : "Add Calf",
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(15.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _buildTextField(controller: cattleIdController, label: "Cattle ID"),
+              _buildTextField(
+                  controller: cattleIdController, label: "Cattle ID"),
               const SizedBox(height: 10),
               _buildTextField(
                 controller: birthDateController,
@@ -138,17 +147,26 @@ class _AddCalfState extends State<AddCalf> {
                 onTap: () => _selectDate(context),
               ),
               const SizedBox(height: 10),
-              _buildTextField(controller: fatherNameController, label: "Father Name"),
+              _buildTextField(
+                  controller: fatherNameController, label: "Father Name"),
               const SizedBox(height: 10),
-              _buildTextField(controller: motherNameController, label: "Mother Name"),
+              _buildTextField(
+                  controller: motherNameController, label: "Mother Name"),
               const SizedBox(height: 10),
-              DropdownButtonFormField<String>(
+              DropdownButtonFormField2<String>(
                 value: _selectedAnimal,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                  ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                ),
                 hint: const Text("Select Animal Type"),
                 items: animal.map((animal) {
                   return DropdownMenuItem(
                     value: animal['name'],
+
                     child: Row(
                       children: [
                         CircleAvatar(
@@ -165,19 +183,25 @@ class _AddCalfState extends State<AddCalf> {
                   setState(() {
                     _selectedAnimal = value;
                     _selectedAnimalImage =
-                    animal.firstWhere((a) => a['name'] == value)['image'];
+                        animal.firstWhere((a) => a['name'] == value)['image'];
                   });
                 },
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submitForm,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _submitForm,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xff6C60FE),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                  child: Text(widget.isEditing ? "Update" : "Submit",
+                      style: const TextStyle(fontSize: 18, color: Colors.white)),
                 ),
-                child: Text(widget.isEditing ? "Update" : "Submit",
-                    style: const TextStyle(fontSize: 18, color: Colors.white)),
               ),
             ],
           ),

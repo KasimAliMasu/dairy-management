@@ -22,10 +22,10 @@ class _MilkingDetailsScreenState extends State<MilkingDetailsScreen> {
     ];
 
     return Scaffold(
-      backgroundColor: Colors.blue,
+      backgroundColor: Color(0xff6C60FE),
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.milkingDetails),
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff6C60FE),
         foregroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
@@ -101,7 +101,7 @@ class _MilkingDetailsScreenState extends State<MilkingDetailsScreen> {
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.blue,
+                              color:  Color(0xff6C60FE),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Text(
@@ -208,7 +208,7 @@ class _MilkingDetailsScreenState extends State<MilkingDetailsScreen> {
                                   width: MediaQuery.of(context).size.width,
                                   padding:
                                   const EdgeInsets.symmetric(vertical: 8),
-                                  color: Colors.blue,
+                                  color: Color(0xff6C60FE),
                                   child:   Center(
                                     child: Text(
                                      AppLocalizations.of(context)!.totalMilkProduction,
@@ -229,7 +229,7 @@ class _MilkingDetailsScreenState extends State<MilkingDetailsScreen> {
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Colors.blue,
+                              color: Color(0xff6C60FE),
                             ),
                           ),
                         ],
@@ -259,7 +259,7 @@ class _MilkingDetailsScreenState extends State<MilkingDetailsScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 4),
           decoration: BoxDecoration(
             color: selectedTimeFilter == index
-                ? Colors.blue
+                ?  Color(0xff6C60FE)
                 : Colors.grey.shade200,
             borderRadius: BorderRadius.circular(12),
           ),

@@ -21,10 +21,10 @@ class _HomeScreenState extends State<HomeScreen> {
         return shouldExit;
       },
       child: Scaffold(
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff6C60FE),
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.blue,
+          backgroundColor: Color(0xff6C60FE),
           elevation: 0,
           title: Row(
             children: [
@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 30),
+
               Container(
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -98,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 child: SizedBox(
-                  height: 650,
+                  height: 680,
                   child: Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: GridScreen(),
@@ -137,5 +137,5 @@ Future<bool> _showExitPopup(BuildContext context) async {
         ),
       ],
     ),
-  ) ?? false; // Return false if dismissed
+  ) ?? false;
 }

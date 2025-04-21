@@ -51,7 +51,7 @@ class _AddVaccinationRegisterState extends State<AddVaccinationRegister> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff6C60FE),
         title: Text(
           widget.index == null ? localizations.addVaccination :  'editVaccination',
           style: const TextStyle(color: Colors.white),
@@ -65,7 +65,7 @@ class _AddVaccinationRegisterState extends State<AddVaccinationRegister> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(15.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -90,8 +90,10 @@ class _AddVaccinationRegisterState extends State<AddVaccinationRegister> {
                       child: Text(vaccine),
                     );
                   }).toList(),
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
+                  decoration:  InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                     contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                   ),
                 ),
@@ -99,10 +101,11 @@ class _AddVaccinationRegisterState extends State<AddVaccinationRegister> {
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
+                height: 50,
                 child: ElevatedButton(
                   onPressed: _submitForm,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Color(0xff6C60FE),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     padding: const EdgeInsets.symmetric(vertical: 15),
                   ),
@@ -125,8 +128,10 @@ class _AddVaccinationRegisterState extends State<AddVaccinationRegister> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: DropdownButtonFormField2<String>(
         value: _selectedAnimal,
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
+        decoration:  InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         ),
         hint: Text(AppLocalizations.of(context)!.selectAnimalType),
@@ -164,7 +169,9 @@ class _AddVaccinationRegisterState extends State<AddVaccinationRegister> {
         readOnly: true,
         decoration: InputDecoration(
           hintText: label,
-          border: const OutlineInputBorder(),
+          border:  OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
           suffixIcon: const Icon(Icons.calendar_today, color: Colors.black),
         ),
@@ -194,7 +201,9 @@ class _AddVaccinationRegisterState extends State<AddVaccinationRegister> {
         controller: controller,
         decoration: InputDecoration(
           hintText: label,
-          border: const OutlineInputBorder(),
+          border:  OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         ),
       ),

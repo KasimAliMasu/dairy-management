@@ -100,9 +100,9 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xff6C60FE),
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff6C60FE),
         automaticallyImplyLeading: false,
         title: Text(
           AppLocalizations.of(context)!.setting,
@@ -110,30 +110,41 @@ class _SettingScreenState extends State<SettingScreen> {
         ),
         centerTitle: true,
       ),
-      body: ListView(
-        children: [
-          ListTile(
-            title: Text(AppLocalizations.of(context)!.language),
-            subtitle: Text(_selectedLanguage),
-            leading: const Icon(Icons.language),
-            onTap: _showLanguageDialog,
+      body: Container(
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(40),
+            topRight: Radius.circular(40),
           ),
-          const Divider(),
-          ListTile(
-            title: Text(AppLocalizations.of(context)!.logout),
-            leading: const Icon(Icons.logout),
-            onTap: () {
-              signOut();
-            },
+        ),
+        child: ListView(
+          children: [
+            SizedBox(height: 30),
+            ListTile(
+              title: Text(AppLocalizations.of(context)!.language),
+              subtitle: Text(_selectedLanguage),
+              leading: const Icon(Icons.language),
+              onTap: _showLanguageDialog,
+            ),
+            const Divider(),
+            ListTile(
+              title: Text(AppLocalizations.of(context)!.logout),
+              leading: const Icon(Icons.logout),
+              onTap: () {
+                signOut();
+              },
 
-          ),
-          const Divider(),
-          ListTile(
-            title: Text(AppLocalizations.of(context)!.version),
-            subtitle: const Text('3.0'),
-            leading: const Icon(Icons.info),
-          ),
-        ],
+            ),
+            const Divider(),
+            ListTile(
+              title: Text(AppLocalizations.of(context)!.version),
+              subtitle: const Text('3.0'),
+              leading: const Icon(Icons.info),
+            ),
+          ],
+        ),
       ),
     );
   }

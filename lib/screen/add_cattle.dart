@@ -112,127 +112,137 @@ class _AddCattleState extends State<AddCattle> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor:Color(0xff6C60FE),
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.addCattle),
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor:Color(0xff6C60FE),
         foregroundColor: Colors.white,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Search Bar
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: TextField(
-                controller: searchController,
-                decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.search,
-                  border: InputBorder.none,
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  suffixIcon: searchController.text.isNotEmpty
-                      ? IconButton(
-                    icon: const Icon(Icons.clear, color: Colors.grey),
-                    onPressed: () {
-                      searchController.clear();
-                      _searchAnimals('');
-                    },
-                  )
-                      : null,
+      body: Container(
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(40),
+            topRight: Radius.circular(40),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Search Bar
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                onChanged: _searchAnimals,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: filteredList.isEmpty
-                  ? Center(child: Text(AppLocalizations.of(context)!.noRecordsFound))
-                  : ListView.builder(
-                itemCount: filteredList.length,
-                itemBuilder: (context, index) {
-                  final animal = filteredList[index];
-                  final imagePath = animal['imagePath'] ?? '';
-                  final imageFile = imagePath.isNotEmpty ? File(imagePath) : null;
-                  bool imageExists = imageFile?.existsSync() ?? false;
-
-                  return Card(
-                    color: Colors.white,
-                    margin: const EdgeInsets.all(8.0),
-                    child: ListTile(
-                      leading: imageExists
-                          ? Image.file(imageFile!, width: 50, height: 50, fit: BoxFit.cover)
-                          : const Icon(Icons.image, size: 50, color: Colors.grey),
-                      title: Text("${AppLocalizations.of(context)!.id}: ${animal['id']}"),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("${AppLocalizations.of(context)!.name}: ${animal['name']}"),
-                          Text("${AppLocalizations.of(context)!.color}: ${animal['color']}"),
-                          Text("${AppLocalizations.of(context)!.selectAnimalType}: ${animal['selectedAnimalType']}"),
-                        ],
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.blue),
-                            onPressed: () async {
-                              final updatedAnimal = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => AddAnimalList(existingData: animal),
-                                ),
-                              );
-
-                              if (updatedAnimal != null) {
-                                _addOrUpdateAnimal(updatedAnimal, index);
-                              }
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () => _deleteAnimal(index),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-
-
-            // Add New Cattle Button
-            Container(
-              width: double.infinity,
-              margin: const EdgeInsets.only(top: 10),
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                child: TextField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    hintText: AppLocalizations.of(context)!.search,
+                    border: InputBorder.none,
+                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                    suffixIcon: searchController.text.isNotEmpty
+                        ? IconButton(
+                      icon: const Icon(Icons.clear, color: Colors.grey),
+                      onPressed: () {
+                        searchController.clear();
+                        _searchAnimals('');
+                      },
+                    )
+                        : null,
+                  ),
+                  onChanged: _searchAnimals,
                 ),
-                icon: const Icon(Icons.add, color: Colors.white),
-                label: Text(AppLocalizations.of(context)!.registerNewCattle,style: TextStyle(color: Colors.white),),
-                onPressed: () async {
-                  final newAnimal = await Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AddAnimalList()),
-                  );
-
-                  if (newAnimal != null) {
-                    _addOrUpdateAnimal(newAnimal);
-                  }
-                },
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              Expanded(
+                child: filteredList.isEmpty
+                    ? Center(child: Text(AppLocalizations.of(context)!.noRecordsFound))
+                    : ListView.builder(
+                  itemCount: filteredList.length,
+                  itemBuilder: (context, index) {
+                    final animal = filteredList[index];
+                    final imagePath = animal['imagePath'] ?? '';
+                    final imageFile = imagePath.isNotEmpty ? File(imagePath) : null;
+                    bool imageExists = imageFile?.existsSync() ?? false;
+
+                    return Card(
+                      color: Colors.white,
+                      margin: const EdgeInsets.all(8.0),
+                      child: ListTile(
+                        leading: imageExists
+                            ? Image.file(imageFile!, width: 50, height: 50, fit: BoxFit.cover)
+                            : const Icon(Icons.image, size: 50, color: Colors.grey),
+                        title: Text("${AppLocalizations.of(context)!.id}: ${animal['id']}"),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("${AppLocalizations.of(context)!.name}: ${animal['name']}"),
+                            Text("${AppLocalizations.of(context)!.color}: ${animal['color']}"),
+                            Text("${AppLocalizations.of(context)!.selectAnimalType}: ${animal['selectedAnimalType']}"),
+                          ],
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit, color: Colors.blue),
+                              onPressed: () async {
+                                final updatedAnimal = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AddAnimalList(existingData: animal),
+                                  ),
+                                );
+
+                                if (updatedAnimal != null) {
+                                  _addOrUpdateAnimal(updatedAnimal, index);
+                                }
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: () => _deleteAnimal(index),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+
+              // Add New Cattle Button
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(top: 10),
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xff6C60FE),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  icon: const Icon(Icons.add, color: Colors.white),
+                  label: Text(AppLocalizations.of(context)!.registerNewCattle,style: TextStyle(color: Colors.white),),
+                  onPressed: () async {
+                    final newAnimal = await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const AddAnimalList()),
+                    );
+
+                    if (newAnimal != null) {
+                      _addOrUpdateAnimal(newAnimal);
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

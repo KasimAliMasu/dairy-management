@@ -1,7 +1,9 @@
+import 'package:dairy_management/screen/feed_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:dairy_management/screen/add_cattle.dart';
 import 'package:dairy_management/screen/setting.dart';
+import '../profile/profile_screen.dart';
 import 'home_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -16,7 +18,9 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
-     AddCattle(),
+    FeedCalculatorScreen(),
+    AddCattle(),
+    ProfileScreen(),
     const SettingScreen(),
   ];
 
@@ -47,7 +51,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          selectedItemColor: Colors.black,
+          selectedItemColor: Color(0xff7b6de6),
           backgroundColor: Colors.white,
           unselectedItemColor: Colors.grey,
           currentIndex: _selectedIndex,
@@ -61,16 +65,30 @@ class _MainScreenState extends State<MainScreen> {
               label: 'Home',
             ),
             BottomNavigationBarItem(
+              icon: Icon(
+                Icons.calculate,
+                size: 30,
+              ),
+              label: 'Feed Cal',
+            ),
+            BottomNavigationBarItem(
               icon: CircleAvatar(
                 radius: 25,
-                backgroundColor: Colors.blue,
+                backgroundColor: Color(0xff6C60FE),
                 child: Icon(
                   FeatherIcons.plus,
                   size: 35,
                   color: Colors.white,
                 ),
               ),
-              label: 'Add',
+              label: '',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.person_outline_sharp,
+                size: 30,
+              ),
+              label: 'Profile',
             ),
             BottomNavigationBarItem(
               icon: Icon(

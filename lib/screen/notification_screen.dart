@@ -75,7 +75,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff6C60FE),
         elevation: 1,
         actions: [
           TextButton(

@@ -11,56 +11,56 @@ class DewormingScreen extends StatefulWidget {
 }
 
 class _DewormingScreenState extends State<DewormingScreen> {
-  List<Map<String, String>> calves = [];
+  List<Map<String, String>> dewormingRecords = []; // Changed from calves to dewormingRecords
 
   @override
   void initState() {
     super.initState();
-    _loadCalves();
+    _loadDewormingRecords(); // Changed from _loadCalves
   }
 
-  Future<void> _loadCalves() async {
+  Future<void> _loadDewormingRecords() async {
     final prefs = await SharedPreferences.getInstance();
-    final String? storedCalves = prefs.getString('calves');
+    final String? storedRecords = prefs.getString('deworming_records'); // Changed key
 
-    if (storedCalves != null) {
+    if (storedRecords != null) {
       try {
-        List<dynamic> decodedList = json.decode(storedCalves);
+        List<dynamic> decodedList = json.decode(storedRecords);
         List<Map<String, String>> parsedList = decodedList
             .map((item) => (item as Map<String, dynamic>).map(
-                  (key, value) => MapEntry(key, value?.toString() ?? ''),
-                ))
+              (key, value) => MapEntry(key, value?.toString() ?? ''),
+        ))
             .toList();
 
         setState(() {
-          calves = parsedList;
+          dewormingRecords = parsedList;
         });
       } catch (e) {
-        print("Error loading calves: $e");
+        print("Error loading deworming records: $e");
       }
     }
   }
 
-  Future<void> _saveCalves() async {
+  Future<void> _saveDewormingRecords() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('calves', json.encode(calves));
+    await prefs.setString('deworming_records', json.encode(dewormingRecords)); // Changed key
   }
 
-  void _addCalf(Map<String, String> calfData) {
+  void _addRecord(Map<String, String> recordData) {
     setState(() {
-      calves.add(calfData);
+      dewormingRecords.add(recordData);
     });
-    _saveCalves();
+    _saveDewormingRecords();
   }
 
-  void _editCalf(int index, Map<String, String> updatedData) {
+  void _editRecord(int index, Map<String, String> updatedData) {
     setState(() {
-      calves[index] = updatedData;
+      dewormingRecords[index] = updatedData;
     });
-    _saveCalves();
+    _saveDewormingRecords();
   }
 
-  void _deleteCalf(int index) {
+  void _deleteRecord(int index) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -74,9 +74,9 @@ class _DewormingScreenState extends State<DewormingScreen> {
           TextButton(
             onPressed: () {
               setState(() {
-                calves.removeAt(index);
+                dewormingRecords.removeAt(index);
               });
-              _saveCalves();
+              _saveDewormingRecords();
               Navigator.pop(context);
             },
             child: const Text('Delete'),
@@ -101,68 +101,64 @@ class _DewormingScreenState extends State<DewormingScreen> {
           "Deworming Records",
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff6C60FE),
       ),
-      body: calves.isEmpty
-          ? const Center(child: Text("No records found"))
+      body: dewormingRecords.isEmpty
+          ? const Center(child: Text("No deworming records found"))
           : ListView.builder(
-              itemCount: calves.length,
-              itemBuilder: (context, index) {
-                final calf = calves[index];
-                return Card(
-                  margin: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    title: Text("Cattle ID: ${calf['cattle_id'] ?? 'N/A'}"),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            "Deworming Date: ${calf['deworming_date'] ?? 'N/A'}"),
-                        Text(
-                            "Medicine Company: ${calf['deworming_medicine_company'] ?? 'N/A'}"),
-                        Text(
-                            "Medicine Name: ${calf['deworming_medicine_name'] ?? 'N/A'}"),
-                      ],
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () async {
-                            final updatedCalf = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    AddDeworming(existingData: calf),
-                              ),
-                            );
-                            if (updatedCalf != null) {
-                              _editCalf(index, updatedCalf);
-                            }
-                          },
+        itemCount: dewormingRecords.length,
+        itemBuilder: (context, index) {
+          final record = dewormingRecords[index];
+          return Card(
+            margin: const EdgeInsets.all(8.0),
+            child: ListTile(
+              title: Text("Cattle ID: ${record['cattle_id'] ?? 'N/A'}"),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Deworming Date: ${record['deworming_date'] ?? 'N/A'}"),
+                  Text("Medicine Company: ${record['deworming_medicine_company'] ?? 'N/A'}"),
+                  Text("Medicine Name: ${record['deworming_medicine_name'] ?? 'N/A'}"),
+                ],
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.edit, color: Colors.blue),
+                    onPressed: () async {
+                      final updatedRecord = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddDeworming(existingData: record),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => _deleteCalf(index),
-                        ),
-                      ],
-                    ),
+                      );
+                      if (updatedRecord != null) {
+                        _editRecord(index, updatedRecord);
+                      }
+                    },
                   ),
-                );
-              },
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () => _deleteRecord(index),
+                  ),
+                ],
+              ),
             ),
+          );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff6C60FE),
         onPressed: () async {
-          final newCalf = await Navigator.push(
+          final newRecord = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => const AddDeworming(),
             ),
           );
-          if (newCalf != null) {
-            _addCalf(newCalf);
+          if (newRecord != null) {
+            _addRecord(newRecord);
           }
         },
         child: const Icon(Icons.add, color: Colors.white),
@@ -170,8 +166,6 @@ class _DewormingScreenState extends State<DewormingScreen> {
     );
   }
 }
-
-// ======================= ADD DEWORMING SCREEN =======================
 
 class AddDeworming extends StatefulWidget {
   final Map<String, String>? existingData;
@@ -185,22 +179,17 @@ class AddDeworming extends StatefulWidget {
 class _AddDewormingState extends State<AddDeworming> {
   final TextEditingController cattleIdController = TextEditingController();
   final TextEditingController dewormingDateController = TextEditingController();
-  final TextEditingController dewormingMedicineCompanyController =
-      TextEditingController();
-  final TextEditingController dewormingMedicineNameController =
-      TextEditingController();
+  final TextEditingController dewormingMedicineCompanyController = TextEditingController();
+  final TextEditingController dewormingMedicineNameController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     if (widget.existingData != null) {
       cattleIdController.text = widget.existingData!['cattle_id'] ?? '';
-      dewormingDateController.text =
-          widget.existingData!['deworming_date'] ?? '';
-      dewormingMedicineCompanyController.text =
-          widget.existingData!['deworming_medicine_company'] ?? '';
-      dewormingMedicineNameController.text =
-          widget.existingData!['deworming_medicine_name'] ?? '';
+      dewormingDateController.text = widget.existingData!['deworming_date'] ?? '';
+      dewormingMedicineCompanyController.text = widget.existingData!['deworming_medicine_company'] ?? '';
+      dewormingMedicineNameController.text = widget.existingData!['deworming_medicine_name'] ?? '';
     }
   }
 
@@ -230,12 +219,14 @@ class _AddDewormingState extends State<AddDeworming> {
       );
       return;
     }
+
     Map<String, String> newDeworming = {
       "cattle_id": cattleIdController.text,
       "deworming_date": dewormingDateController.text,
       "deworming_medicine_company": dewormingMedicineCompanyController.text,
       "deworming_medicine_name": dewormingMedicineNameController.text,
     };
+
     Navigator.pop(context, newDeworming);
   }
 
@@ -243,7 +234,7 @@ class _AddDewormingState extends State<AddDeworming> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff6C60FE),
         leading: IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
@@ -257,15 +248,31 @@ class _AddDewormingState extends State<AddDeworming> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
             _buildTextField(cattleIdController, "Cattle ID"),
             _buildDateField(dewormingDateController, "Deworming Date"),
-            _buildTextField(
-                dewormingMedicineCompanyController, "Medicine Company"),
+            _buildTextField(dewormingMedicineCompanyController, "Medicine Company"),
             _buildTextField(dewormingMedicineNameController, "Medicine Name"),
-            ElevatedButton(onPressed: _submitForm, child: const Text("Submit"))
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xff6C60FE),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                ),
+                onPressed: _submitForm,
+                child: const Text(
+                  "Submit",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -279,9 +286,10 @@ class _AddDewormingState extends State<AddDeworming> {
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
-          border: const OutlineInputBorder(),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         ),
       ),
     );
@@ -294,9 +302,10 @@ class _AddDewormingState extends State<AddDeworming> {
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
-          border: const OutlineInputBorder(),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
           suffixIcon: const Icon(Icons.calendar_today),
         ),
         readOnly: true,
