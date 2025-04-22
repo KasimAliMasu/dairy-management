@@ -5,14 +5,13 @@ import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 
 class AddCalfGrowth extends StatefulWidget {
-  final Map<String, String>? initialData;
+  final Map<String, String>? calfData;
   final int? index;
 
   const AddCalfGrowth({
     super.key,
-    this.initialData,
+    this.calfData,
     this.index,
-    required Map<String, String> calfData,
   });
 
   @override
@@ -36,7 +35,7 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
     {
       'name': 'Cow2',
       'image':
-          'https://plus.unsplash.com/premium_photo-1661895100691-06cf2364d0b5'
+      'https://plus.unsplash.com/premium_photo-1661895100691-06cf2364d0b5'
     },
     {
       'name': 'Cow3',
@@ -47,27 +46,35 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
   @override
   void initState() {
     super.initState();
-    if (widget.initialData != null) {
-      cattleIdController.text = widget.initialData!['cattleId'] ?? '';
-      dateController.text = widget.initialData!['date'] ?? '';
-      calfWeightController.text = widget.initialData!['calfWeight'] ?? '';
-      notesController.text = widget.initialData!['notes'] ?? '';
-      _selectedAnimal = widget.initialData!['cattleId'];
-      _selectedAnimalImage = widget.initialData!['selectedAnimalImage'];
+    if (widget.calfData != null) {
+      final data = widget.calfData!;
+      cattleIdController.text = data['cattleId'] ?? '';
+      dateController.text = data['date'] ?? '';
+      calfWeightController.text = data['calfWeight'] ?? '';
+      notesController.text = data['notes'] ?? '';
+      _selectedAnimalImage = data['selectedAnimalImage'];
+      final match = animalList.firstWhere(
+              (a) => a['name'] == data['cattleId'],
+          orElse: () => {});
+      if (match.isNotEmpty) {
+        _selectedAnimal = match['name'];
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xff6C60FE),
+        backgroundColor: const Color(0xff6C60FE),
         title: Text(
-            widget.initialData != null
-                ? 'editCalfGrowth'
-                : localizations.addCalfGrowth,
-            style: const TextStyle(color: Colors.white)),
+          widget.calfData != null
+              ? 'editCalfGrowth'
+              : localizations.addCalfGrowth,
+          style: const TextStyle(color: Colors.white),
+        ),
         leading: IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
@@ -84,8 +91,7 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
               _buildDropdown(),
               _buildTextField(cattleIdController, localizations.cattleId),
               _buildDateField(),
-              _buildNumericField(
-                  calfWeightController, localizations.calfWeight),
+              _buildNumericField(calfWeightController, localizations.calfWeight),
               _buildTextField(notesController, localizations.notes),
               const SizedBox(height: 20),
               SizedBox(
@@ -93,14 +99,16 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
                 child: ElevatedButton(
                   onPressed: _submitForm,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xff6C60FE),
+                    backgroundColor: const Color(0xff6C60FE),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                     padding: const EdgeInsets.symmetric(vertical: 15),
                   ),
-                  child: Text(localizations.submit,
-                      style:
-                          const TextStyle(fontSize: 18, color: Colors.white)),
+                  child: Text(
+                    localizations.submit,
+                    style: const TextStyle(fontSize: 18, color: Colors.white),
+                  ),
                 ),
               ),
             ],
@@ -113,9 +121,12 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
   Widget _buildDropdown() {
     return DropdownButtonFormField2<String>(
       value: _selectedAnimal,
-      decoration:  InputDecoration(border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-      )),
+      isExpanded: true,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
       hint: Text(AppLocalizations.of(context)!.selectAnimalType),
       items: animalList.map((animal) {
         final name = animal['name'] ?? 'Unknown';
@@ -127,7 +138,7 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
               CircleAvatar(
                 backgroundImage: image.isNotEmpty ? NetworkImage(image) : null,
                 radius: 15,
-                child: image.isEmpty ? Icon(Icons.pets, size: 15) : null,
+                child: image.isEmpty ? const Icon(Icons.pets, size: 15) : null,
               ),
               const SizedBox(width: 10),
               Text(name),
@@ -138,9 +149,8 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
       onChanged: (value) {
         setState(() {
           _selectedAnimal = value;
-          _selectedAnimalImage = animalList.firstWhere(
-              (a) => a['name'] == value,
-              orElse: () => {'image': ''})['image'];
+          _selectedAnimalImage = animalList
+              .firstWhere((a) => a['name'] == value, orElse: () => {'image': ''})['image'];
         });
       },
       validator: (value) => value == null ? 'Please select an animal' : null,
@@ -155,7 +165,7 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
         readOnly: true,
         decoration: InputDecoration(
           hintText: AppLocalizations.of(context)!.date,
-          border:  OutlineInputBorder(
+          border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
           suffixIcon: IconButton(
@@ -189,7 +199,7 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
         controller: controller,
         decoration: InputDecoration(
           hintText: label,
-          border:  OutlineInputBorder(
+          border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
         ),
@@ -206,7 +216,7 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         decoration: InputDecoration(
           hintText: label,
-          border:  OutlineInputBorder(
+          border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
         ),
@@ -220,7 +230,8 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
         dateController.text.isEmpty ||
         calfWeightController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please fill all fields")));
+        const SnackBar(content: Text("Please fill all fields")),
+      );
       return;
     }
 
@@ -231,6 +242,7 @@ class _AddCalfGrowthState extends State<AddCalfGrowth> {
       "notes": notesController.text,
       "selectedAnimalImage": _selectedAnimalImage ?? '',
     };
+
     Navigator.pop(context, newCalf);
   }
 }

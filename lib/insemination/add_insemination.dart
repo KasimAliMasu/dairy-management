@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 import '../NotificationService.dart';
 
 class AddInsemination extends StatefulWidget {
@@ -24,7 +24,6 @@ class _AddInseminationState extends State<AddInsemination> {
   @override
   void initState() {
     super.initState();
-    // Pre-fill with existingData if available
     tagNoController =
         TextEditingController(text: widget.existingData?['tagNo'] ?? '');
     inseminationDateController = TextEditingController(
@@ -48,6 +47,22 @@ class _AddInseminationState extends State<AddInsemination> {
     super.dispose();
   }
 
+  Future<void> _pickDate() async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (pickedDate != null) {
+      String formattedDate = DateFormat(' dd/MM/yyyy').format(pickedDate);
+      setState(() {
+        inseminationDateController.text = formattedDate;
+      });
+    }
+  }
+
   void _submitForm() async {
     if (inseminationDateController.text.isEmpty ||
         semenCompanyController.text.isEmpty ||
@@ -69,6 +84,7 @@ class _AddInseminationState extends State<AddInsemination> {
       "lactationNo": lactationNoController.text,
       "selectedMethod": selectedMethod,
     };
+
     await NotificationService.showNotification(
       title: "Data Submitted",
       body: "Insemination data for tag ${inseminationData['tagNo']} saved.",
@@ -92,7 +108,7 @@ class _AddInseminationState extends State<AddInsemination> {
           widget.existingData != null
               ? "Edit Insemination"
               : "Add Insemination",
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
         backgroundColor: const Color(0xff6C60FE),
       ),
@@ -109,19 +125,21 @@ class _AddInseminationState extends State<AddInsemination> {
                         borderRadius: BorderRadius.circular(10)),
                     labelText: "Tag No"),
                 validator: (value) =>
-                    value!.isEmpty ? "Please enter Tag No" : null,
+                value!.isEmpty ? "Please enter Tag No" : null,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextFormField(
                 controller: inseminationDateController,
+                readOnly: true,
+                onTap: _pickDate,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10)),
                     labelText: "A.I. Date"),
                 validator: (value) =>
-                    value!.isEmpty ? "Please enter A.I. Date" : null,
+                value!.isEmpty ? "Please enter A.I. Date" : null,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextFormField(
                 controller: bullNameController,
                 decoration: InputDecoration(
@@ -129,7 +147,7 @@ class _AddInseminationState extends State<AddInsemination> {
                         borderRadius: BorderRadius.circular(10)),
                     labelText: "Bull Name"),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextFormField(
                 controller: semenCompanyController,
                 decoration: InputDecoration(
@@ -137,7 +155,7 @@ class _AddInseminationState extends State<AddInsemination> {
                         borderRadius: BorderRadius.circular(10)),
                     labelText: "Semen Company"),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextFormField(
                 controller: lactationNoController,
                 decoration: InputDecoration(
@@ -145,7 +163,7 @@ class _AddInseminationState extends State<AddInsemination> {
                         borderRadius: BorderRadius.circular(10)),
                     labelText: "Lactation No"),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               DropdownButtonFormField<String>(
                 value: selectedMethod,
                 items: ['A.I.', 'Not Pregnant'].map((method) {
@@ -167,9 +185,9 @@ class _AddInseminationState extends State<AddInsemination> {
               ElevatedButton(
                 onPressed: _submitForm,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xff6C60FE),
+                  backgroundColor: const Color(0xff6C60FE),
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                 ),

@@ -83,6 +83,31 @@ class _VaccinationRegisterState extends State<VaccinationRegister> {
     );
   }
 
+  Widget _buildTwoColumnRow(String label1, String? value1, String label2, String? value2) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(child: _buildDetail(label1, value1)),
+          const SizedBox(width: 10),
+          Expanded(child: _buildDetail(label2, value2)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetail(String label, String? value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+        const SizedBox(height: 2),
+        Text(value ?? "N/A", style: const TextStyle(color: Colors.black87, fontSize: 15)),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
@@ -93,7 +118,7 @@ class _VaccinationRegisterState extends State<VaccinationRegister> {
           localizations.vaccination,
           style: const TextStyle(color: Colors.white),
         ),
-        backgroundColor: Color(0xff6C60FE),
+        backgroundColor: const Color(0xff6C60FE),
         leading: IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
@@ -108,48 +133,94 @@ class _VaccinationRegisterState extends State<VaccinationRegister> {
         itemCount: vaccinations.length,
         itemBuilder: (context, index) {
           String? imageUrl = vaccinations[index]['selectedAnimalImage'];
+
           return Card(
             margin: const EdgeInsets.all(8.0),
-            child: ListTile(
-              leading: (imageUrl != null && imageUrl.isNotEmpty)
-                  ? CircleAvatar(
-                radius: 25,
-                backgroundImage: NetworkImage(imageUrl),
-              )
-                  : const Icon(Icons.image_not_supported, color: Colors.grey, size: 50),
-              title: Text("Cattle ID: ${vaccinations[index]['cattleId'] ?? 'N/A'}"),
-              subtitle: Column(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Tag No: ${vaccinations[index]['tagNo'] ?? 'N/A'}"),
-                  Text("Vaccination Date: ${vaccinations[index]['vaccinationDate'] ?? 'N/A'}"),
-                  Text("Vaccine Company: ${vaccinations[index]['vaccineCompany'] ?? 'N/A'}"),
-                  Text("Vaccine Name: ${vaccinations[index]['vaccineName'] ?? 'N/A'}"),
-                  Text("${localizations.cowName}: ${vaccinations[index]['selectedAnimal'] ?? 'N/A'}"),
-                ],
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.black),
-                    onPressed: () async {
-                      final updatedVaccination = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AddVaccinationRegister(
-                            vaccinationData: vaccinations[index],
-                          ),
+                  Row(
+                    children: [
+                      if (imageUrl != null && imageUrl.isNotEmpty)
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundImage: NetworkImage(imageUrl),
+                        )
+                      else
+                        const Icon(Icons.image_not_supported, color: Colors.grey, size: 60),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text("Cattle ID: ",
+                                        style: const TextStyle( fontWeight: FontWeight.bold,
+                                          fontSize: 20,),),
+
+                                    Text(vaccinations[index]['cattleId'] ?? 'N/A',
+                                        style: const TextStyle(  color: Colors.black87,
+                                          fontSize: 17,),),
+
+                                  ],
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[300],
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Icons.edit, color: Colors.blue),
+                                        onPressed: () async {
+                                          final updatedVaccination = await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => AddVaccinationRegister(
+                                                vaccinationData: vaccinations[index],
+                                              ),
+                                            ),
+                                          );
+                                          if (updatedVaccination != null) {
+                                            _editVaccination(index, updatedVaccination);
+                                          }
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.delete, color: Colors.red),
+                                        onPressed: () => _deleteVaccination(index),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                      );
-                      if (updatedVaccination != null) {
-                        _editVaccination(index, updatedVaccination);
-                      }
-                    },
+                      ),
+                    ],
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _deleteVaccination(index),
+                  const Divider(),
+                  _buildTwoColumnRow(
+                    "Tag No", vaccinations[index]['tagNo'],
+                    "Vaccination Date", vaccinations[index]['vaccinationDate'],
+                  ),
+                  const Divider(),
+                  _buildTwoColumnRow(
+                    "Vaccine Company", vaccinations[index]['vaccineCompany'],
+                    "Vaccine Name", vaccinations[index]['vaccineName'],
+                  ),
+                  const Divider(),
+                  _buildTwoColumnRow(
+                    localizations.cowName, vaccinations[index]['selectedAnimal'],
+                    "", "", // Leave second column empty if needed
                   ),
                 ],
               ),
@@ -158,7 +229,7 @@ class _VaccinationRegisterState extends State<VaccinationRegister> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xff6C60FE),
+        backgroundColor: const Color(0xff6C60FE),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         onPressed: () async {
           final newVaccination = await Navigator.push(

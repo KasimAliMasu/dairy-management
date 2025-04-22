@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../insemination/add_insemination.dart';
-
 
 class InseminationScreen extends StatefulWidget {
   const InseminationScreen({super.key});
@@ -29,7 +29,8 @@ class _InseminationScreenState extends State<InseminationScreen> {
       try {
         List<dynamic> decodedList = json.decode(storedData);
         setState(() {
-          cattleData = decodedList.map((item) => Map<String, String>.from(item)).toList();
+          cattleData =
+              decodedList.map((item) => Map<String, String>.from(item)).toList();
         });
       } catch (e) {
         print("Error loading data: $e");
@@ -107,14 +108,42 @@ class _InseminationScreenState extends State<InseminationScreen> {
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
-            DropdownButton<String>(
-              value: selectedType,
-              items: dropdownValues.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedType = value!;
-                });
-              },
+            Container(
+              width: double.infinity,
+              height: 45,
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.grey, width: 1),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton2<String>(
+                  isExpanded: true,
+                  value: selectedType,
+                  items: dropdownValues
+                      .map((e) => DropdownMenuItem<String>(
+                    value: e,
+                    child: Text(e),
+                  ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedType = value!;
+                    });
+                  },
+                  customButton: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        selectedType!,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      const Icon(Icons.arrow_drop_down),
+                    ],
+                  ),
+                ),
+              ),
             ),
             const SizedBox(height: 10),
             Expanded(
@@ -127,11 +156,14 @@ class _InseminationScreenState extends State<InseminationScreen> {
                       final updatedData = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AddInsemination(existingData: filteredData[index]),
+                          builder: (context) => AddInsemination(
+                            existingData: filteredData[index],
+                          ),
                         ),
                       );
                       if (updatedData != null) {
-                        int actualIndex = cattleData.indexOf(filteredData[index]);
+                        int actualIndex =
+                        cattleData.indexOf(filteredData[index]);
                         _addOrUpdateData(updatedData, actualIndex);
                       }
                     },
@@ -148,6 +180,7 @@ class _InseminationScreenState extends State<InseminationScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xff6C60FE),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         onPressed: () async {
           final newData = await Navigator.push(
             context,
@@ -168,37 +201,96 @@ class CattleCard extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
-  const CattleCard({required this.data, required this.onEdit, required this.onDelete, super.key});
+  const CattleCard({
+    required this.data,
+    required this.onEdit,
+    required this.onDelete,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: ListTile(
-        title: Text("Tag No: ${data['tagNo']}"),
-        subtitle: Column(
+      color: Colors.white,
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      child: Padding(
+        padding: const EdgeInsets.all(14.0),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("A.I. Date: ${data['inseminationDate']}"),
-            Text("Pregnancy Status: ${data['selectedMethod']}"),
-            Text("Bull Name: ${data['bullName']}"),
-            Text("Semen Company: ${data['semenCompany']}"),
-            Text("Lactation No: ${data['lactationNo']}"),
-          ],
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.edit, color: Colors.blue),
-              onPressed: onEdit,
+            // Header row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    const Text(
+                      "Tag No: ",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    Text(
+                      data['tagNo'] ?? '',
+                      style: const TextStyle(color: Colors.black87, fontSize: 17),
+                    ),
+                  ],
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit, color: Colors.blue),
+                        onPressed: onEdit,
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: onDelete,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            IconButton(
-              icon: const Icon(Icons.delete, color: Colors.red),
-              onPressed: onDelete,
-            ),
+            const Divider(),
+            _buildTwoColumnRow("A.I. Date", data['inseminationDate'], "Pregnancy Status", data['selectedMethod']),
+            const Divider(),
+            _buildTwoColumnRow("Bull Name", data['bullName'], "Semen Company", data['semenCompany']),
+            const Divider(),
+            _buildTwoColumnRow("Lactation No", data['lactationNo'], "", ""),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTwoColumnRow(String label1, String? value1, String label2, String? value2) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(child: _buildDetail(label1, value1)),
+          const SizedBox(width: 10),
+          Expanded(child: _buildDetail(label2, value2)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetail(String label, String? value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+        const SizedBox(height: 2),
+
+        Text(value ?? "", style: const TextStyle(color: Colors.black87, fontSize: 15)),
+      ],
     );
   }
 }

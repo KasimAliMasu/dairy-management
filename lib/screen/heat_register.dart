@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:intl/intl.dart';
 
 class HeatRegister extends StatefulWidget {
   const HeatRegister({super.key});
@@ -26,9 +26,7 @@ class _HeatRegisterState extends State<HeatRegister> {
     if (storedRecords != null) {
       setState(() {
         records = List<Map<String, String>>.from(
-          json
-              .decode(storedRecords)
-              .map((item) => Map<String, String>.from(item)),
+          json.decode(storedRecords).map((item) => Map<String, String>.from(item)),
         );
       });
     }
@@ -92,61 +90,72 @@ class _HeatRegisterState extends State<HeatRegister> {
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(t.heatRegister,style: TextStyle(color: Colors.white),),
-        backgroundColor: Color(0xff6C60FE),
+        title: Text(t.heatRegister, style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xff6C60FE),
       ),
       body: records.isEmpty
           ? Center(child: Text(t.noRecordsFound))
           : ListView.builder(
-              itemCount: records.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  margin: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    title: Text("${t.cattleId}: ${records[index]['cattleId']}"),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("${t.heat_date}: ${records[index]['heatDate']}"),
-                        Text("${t.symptoms}: ${records[index]['symptoms']}"),
-                        Text("${t.diagnosis}: ${records[index]['diagnosis']}"),
-                        Text("${t.treatment}: ${records[index]['treatment']}"),
-                        Text("${t.result}: ${records[index]['result']}"),
-                        Text(
-                            "${t.cost_of_treatment}: ${records[index]['costOfTreatment']}"),
-                        Text("${t.note}: ${records[index]['note']}"),
-                      ],
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () async {
-                            final updatedRecord = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    AddHeat(existingData: records[index]),
-                              ),
-                            );
-                            if (updatedRecord != null) {
-                              _editRecord(index, updatedRecord);
-                            }
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => _deleteRecord(index),
-                        ),
-                      ],
-                    ),
+        itemCount: records.length,
+        itemBuilder: (context, index) {
+          final record = records[index];
+          return Card(
+            margin: const EdgeInsets.all(8.0),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Edit and delete icons at the top right
+
+                  // Record details
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("${t.cattleId}: ${record['cattleId']}",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            onPressed: () async {
+                              final updatedRecord = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      AddHeat(existingData: record),
+                                ),
+                              );
+                              if (updatedRecord != null) {
+                                _editRecord(index, updatedRecord);
+                              }
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () => _deleteRecord(index),
+                          ),
+                        ],
+                      ),
+
+                    ],
                   ),
-                );
-              },
+                  Text("${t.heat_date}: ${record['heatDate']}"),
+                  Text("${t.symptoms}: ${record['symptoms']}"),
+                  Text("${t.diagnosis}: ${record['diagnosis']}"),
+                  Text("${t.treatment}: ${record['treatment']}"),
+                  Text("${t.result}: ${record['result']}"),
+                  Text("${t.cost_of_treatment}: ${record['costOfTreatment']}"),
+                  Text("${t.note}: ${record['note']}"),
+                ],
+              ),
             ),
+          );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xff6C60FE),
+        backgroundColor: const Color(0xff6C60FE),
         onPressed: () async {
           final newRecord = await Navigator.push(
             context,
@@ -156,10 +165,7 @@ class _HeatRegisterState extends State<HeatRegister> {
             _addRecord(newRecord);
           }
         },
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }

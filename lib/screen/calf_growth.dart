@@ -4,7 +4,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'add_calfGrowth.dart';
 
-
 class CalfGrowth extends StatefulWidget {
   const CalfGrowth({super.key});
 
@@ -60,22 +59,23 @@ class _CalfGrowthState extends State<CalfGrowth> {
 
   Future<bool> _showDeleteDialog() async {
     return await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Confirm Deletion"),
-        content: const Text("Are you sure you want to delete this record?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text("Cancel"),
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("Confirm Deletion"),
+            content: const Text("Are you sure you want to delete this record?"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child:
+                    const Text("Delete", style: TextStyle(color: Colors.red)),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text("Delete", style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    ) ??
+        ) ??
         false;
   }
 
@@ -85,8 +85,9 @@ class _CalfGrowthState extends State<CalfGrowth> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(localizations.calfGrowth, style: const TextStyle(color: Colors.white)),
-        backgroundColor: Color(0xff6C60FE),
+        title: Text(localizations.calfGrowth,
+            style: const TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xff6C60FE),
         leading: IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
@@ -98,64 +99,188 @@ class _CalfGrowthState extends State<CalfGrowth> {
       body: calves.isEmpty
           ? Center(child: Text(localizations.noRecords))
           : ListView.builder(
-        itemCount: calves.length,
-        itemBuilder: (context, index) {
-          return Card(
-            margin: const EdgeInsets.all(8.0),
-            child: ListTile(
-              leading: calves[index]['selectedAnimalImage'] != null &&
-                  calves[index]['selectedAnimalImage']!.isNotEmpty
-                  ? CircleAvatar(
-                radius: 25,
-                backgroundImage: NetworkImage(calves[index]['selectedAnimalImage']!),
-              )
-                  : const Icon(Icons.image_not_supported, color: Colors.grey, size: 50),
-              title: Text(
-                "${localizations.cattleId}: ${calves[index]['cattleId']}",
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("${localizations.date}: ${calves[index]['date']}"),
-                  Text("${localizations.calfWeight}: ${calves[index]['calfWeight']}"),
-                  Text("${localizations.notes}: ${calves[index]['notes']}"),
-                ],
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () async {
-                      final updatedCalf = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AddCalfGrowth(calfData: calves[index], index: index),
+              itemCount: calves.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  margin: const EdgeInsets.all(8.0),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      calves[index]['selectedAnimalImage'] !=
+                                                  null &&
+                                              calves[index]
+                                                      ['selectedAnimalImage']!
+                                                  .isNotEmpty
+                                          ? CircleAvatar(
+                                              radius: 30,
+                                              backgroundImage: NetworkImage(
+                                                  calves[index]
+                                                      ['selectedAnimalImage']!),
+                                            )
+                                          : const Icon(
+                                              Icons.image_not_supported,
+                                              color: Colors.grey,
+                                              size: 60),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[300],
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(Icons.edit,
+                                                  color: Colors.blue),
+                                              onPressed: () async {
+                                                final updatedCalf =
+                                                    await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        AddCalfGrowth(
+                                                      calfData: calves[index],
+                                                      index: index,
+                                                    ),
+                                                  ),
+                                                );
+                                                if (updatedCalf != null) {
+                                                  _addOrUpdateCalf(
+                                                      updatedCalf, index);
+                                                }
+                                              },
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(Icons.delete,
+                                                  color: Colors.red),
+                                              onPressed: () => _deleteCalf(index),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Divider(),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Text(
+                                            localizations.cattleId,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 17,
+                                            ),
+                                          ),
+                                          Text(
+                                            calves[index]['cattleId'] ?? 'N/A',
+                                            style: const TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        children: [
+                                          Text(
+                                            localizations.date,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 17,
+                                            ),
+                                          ),
+                                          Text(
+                                            calves[index]['date'] ?? 'N/A',
+                                            style: const TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  const Divider(),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Text(
+                                            localizations.calfWeight,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 17,
+                                            ),
+                                          ),
+                                          Text(
+                                            calves[index]['calfWeight'] ?? 'N/A',
+                                            style: const TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        children: [
+                                          Text(
+                                            localizations.notes,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 17,
+                                            ),
+                                          ),
+                                          Text(
+                                            " ${calves[index]['notes'] ?? 'N/A'}",
+                                            style: const TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                      );
-                      if (updatedCalf != null) {
-                        _addOrUpdateCalf(updatedCalf, index);
-                      }
-                    },
+                      ],
+                    ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _deleteCalf(index),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
-          );
-        },
-      ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xff6C60FE),
+        backgroundColor: const Color(0xff6C60FE),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         onPressed: () async {
           final newCalf = await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AddCalfGrowth(calfData: {},)),
+            MaterialPageRoute(
+              builder: (context) => const AddCalfGrowth(calfData: {}),
+            ),
           );
           if (newCalf != null) {
             _addOrUpdateCalf(newCalf);

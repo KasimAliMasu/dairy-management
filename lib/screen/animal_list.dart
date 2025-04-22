@@ -1,7 +1,10 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
+import 'package:cached_network_image/cached_network_image.dart';
 
 class AddAnimalList extends StatefulWidget {
   final Map<String, String>? existingData;
@@ -27,19 +30,32 @@ class _AddAnimalListState extends State<AddAnimalList> {
       nameController.text = widget.existingData!['name'] ?? '';
       colorController.text = widget.existingData!['color'] ?? '';
       selectedAnimalType = widget.existingData!['selectedAnimalType'];
-      if (widget.existingData!['imagePath'] != null &&
-          widget.existingData!['imagePath']!.isNotEmpty) {
-        _image = File(widget.existingData!['imagePath']!);
+      if (widget.existingData!['imagePath'] != null) {
+        _checkImageExists(widget.existingData!['imagePath']!);
       }
     }
   }
 
-  Future<void> _pickImage() async {
-    final pickedFile =
-    await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
+  Future<void> _checkImageExists(String imagePath) async {
+    if (imagePath.startsWith('http')) return;
+
+    final file = File(imagePath);
+    if (await file.exists()) {
       setState(() {
-        _image = File(pickedFile.path);
+        _image = file;
+      });
+    }
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      final appDir = await getApplicationDocumentsDirectory();
+      final fileName = path.basename(pickedFile.path);
+      final savedImage = await File(pickedFile.path).copy('${appDir.path}/$fileName');
+
+      setState(() {
+        _image = savedImage;
       });
     }
   }
@@ -60,7 +76,7 @@ class _AddAnimalListState extends State<AddAnimalList> {
       "name": nameController.text,
       "color": colorController.text,
       "selectedAnimalType": selectedAnimalType!,
-      "imagePath": _image?.path ?? ''
+      "imagePath": _image?.path ?? widget.existingData?['imagePath'] ?? ''
     });
   }
 
@@ -76,8 +92,8 @@ class _AddAnimalListState extends State<AddAnimalList> {
       appBar: AppBar(
         title: Text(widget.existingData == null
             ? localizations.addAnimal
-            :  'Edit Animal'),
-        backgroundColor: Color(0xff6C60FE),
+            : 'Edit Animal'),
+        backgroundColor: const Color(0xff6C60FE),
         foregroundColor: Colors.white,
       ),
       body: Padding(
@@ -106,8 +122,21 @@ class _AddAnimalListState extends State<AddAnimalList> {
               _buildTextField(colorController, localizations.color),
               const SizedBox(height: 10),
               _image != null
-                  ? Image.file(_image!, width: 100, height: 100, fit: BoxFit.cover)
-                  : const Icon(Icons.image, size: 100),
+                  ? Image.file(_image!,
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+                errorBuilder: (ctx, error, stackTrace) => _errorWidget(),
+              )
+                  : (widget.existingData?['imagePath']?.startsWith('http') ?? false)
+                  ? CachedNetworkImage(
+                width: 100,
+                height: 100,
+                imageUrl: widget.existingData!['imagePath']!,
+                placeholder: (ctx, url) => const CircularProgressIndicator(),
+                errorWidget: (ctx, url, err) => _errorWidget(),
+              )
+                  : _errorWidget(),
               TextButton(
                 onPressed: _pickImage,
                 child: Text(localizations.uploadImage),
@@ -115,7 +144,7 @@ class _AddAnimalListState extends State<AddAnimalList> {
               const SizedBox(height: 10),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xff6C60FE),
+                  backgroundColor: const Color(0xff6C60FE),
                   padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 100),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
@@ -125,7 +154,7 @@ class _AddAnimalListState extends State<AddAnimalList> {
                 child: Text(
                   widget.existingData == null
                       ? localizations.submit
-                      :  'update',
+                      : 'Update',
                   style: const TextStyle(color: Colors.white),
                 ),
               ),
@@ -136,12 +165,16 @@ class _AddAnimalListState extends State<AddAnimalList> {
     );
   }
 
+  Widget _errorWidget() {
+    return const Icon(Icons.image, size: 100);
+  }
+
   Widget _buildTextField(TextEditingController controller, String label) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
         hintText: label,
-        border:  OutlineInputBorder(
+        border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),

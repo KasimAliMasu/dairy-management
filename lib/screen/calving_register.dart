@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'addCalvingRegister.dart';
 
@@ -17,148 +16,130 @@ class _CalvingRegisterState extends State<CalvingRegister> {
   @override
   void initState() {
     super.initState();
-    _loadCalves();
+    loadCalves();
   }
 
-  Future<void> _loadCalves() async {
+  Future<void> loadCalves() async {
     final prefs = await SharedPreferences.getInstance();
-    final String? storedCalves = prefs.getString('calves');
+    final String? storedData = prefs.getString('calving_register_data');
 
-    if (storedCalves != null) {
+    if (storedData != null) {
       try {
-        List<dynamic> decodedList = json.decode(storedCalves);
-        List<Map<String, String>> parsedList = decodedList.map((item) {
-          return Map<String, String>.from(item);
-        }).toList();
-
+        final List<dynamic> decodedList = jsonDecode(storedData);
         setState(() {
-          calves = parsedList;
+          calves = decodedList.map((e) => Map<String, String>.from(e)).toList();
         });
       } catch (e) {
-        debugPrint("Error loading calves: $e");
+        print("Error decoding saved calves: $e");
       }
     }
   }
 
-  Future<void> _saveCalves() async {
+  Future<void> saveCalves() async {
     final prefs = await SharedPreferences.getInstance();
-    final String encodedCalves = json.encode(calves);
-    await prefs.setString('calves', encodedCalves);
+    final String encodedData = jsonEncode(calves);
+    await prefs.setString('calving_register_data', encodedData);
   }
 
-  void _addCalf(Map<String, String> calfData) {
-    setState(() {
-      calves.add(calfData);
-    });
-    _saveCalves();
-  }
-
-  void _editCalf(int index, Map<String, String> updatedCalfData) {
-    setState(() {
-      calves[index] = updatedCalfData;
-    });
-    _saveCalves();
-  }
-
-  void _confirmDelete(int index) {
-    showDialog(
+  Future<void> deleteCalf(int index) async {
+    bool confirm = await showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('deleteRecord'),
-          content: Text('deleteConfirmation'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                _deleteCalf(index);
-                Navigator.pop(context);
-              },
-              child: Text( 'delete', style: const TextStyle(color: Colors.red)),
-            ),
-          ],
-        );
-      },
+      builder: (_) => AlertDialog(
+        title: const Text("Delete Record"),
+        content: const Text("Are you sure you want to delete this record?"),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("Cancel")),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Delete")),
+        ],
+      ),
     );
+    if (confirm) {
+      setState(() => calves.removeAt(index));
+      await saveCalves();
+    }
   }
 
-  void _deleteCalf(int index) {
-    setState(() {
-      calves.removeAt(index);
-    });
-    _saveCalves();
+  Future<void> editCalf(int index) async {
+    final updatedData = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => AddCalvingRegister(editData: calves[index]),
+      ),
+    );
+    if (updatedData != null) {
+      setState(() => calves[index] = Map<String, String>.from(updatedData));
+      await saveCalves();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final locale = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xff6C60FE),
+        title: const Text("Calving Register", style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: const CircleAvatar(
             backgroundColor: Colors.white,
-            child: Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
+            child: Icon(Icons.arrow_back, color: Colors.black),
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
-          locale.add_calving_record,
-          style: const TextStyle(color: Colors.white),
-        ),
+        backgroundColor: const Color(0xff6C60FE),
       ),
       body: calves.isEmpty
-          ? Center(child: Text(locale.noRecordsFound))
+          ? const Center(child: Text("No records found"))
           : ListView.builder(
         itemCount: calves.length,
         itemBuilder: (context, index) {
-          String? imageUrl = calves[index]['selectedAnimalImage'];
+          final calf = calves[index];
           return Card(
-            margin: const EdgeInsets.all(8.0),
-            child: ListTile(
-              leading: imageUrl != null && imageUrl.isNotEmpty
-                  ? CircleAvatar(
-                radius: 25,
-                backgroundImage: NetworkImage(imageUrl),
-                onBackgroundImageError: (_, __) => debugPrint("Image load error"),
-              )
-                  : const Icon(Icons.image_not_supported, color: Colors.grey, size: 50),
-              title: Text("${locale.cattleId}: ${calves[index]['cattleId']}"),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            margin: const EdgeInsets.all(8),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
                 children: [
-                  Text("${locale.calvingDate}: ${calves[index]['calvingDate']}"),
-                  Text("${locale.lactationNo}: ${calves[index]['lactationNo']}"),
-                  Text("${locale.calf_gender}: ${calves[index]['calfGender']}"),
-                  Text("${locale.calf_name}: ${calves[index]['calfName']}"),
-                ],
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () async {
-                      final updatedCalf = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AddCalvingRegister(editData: calves[index]),
+                  Row(
+                    children: [
+                      calf['selectedAnimalImage'] != null && calf['selectedAnimalImage']!.isNotEmpty
+                          ? CircleAvatar(
+                        backgroundImage: NetworkImage(calf['selectedAnimalImage']!),
+                        radius: 30,
+                      )
+                          : const Icon(Icons.image_not_supported, color: Colors.grey, size: 60),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("Cattle ID: ${calf['cattleId'] ?? 'N/A'}",
+                                    style: const TextStyle(fontWeight: FontWeight.bold)),
+
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.edit, color: Colors.blue),
+                                      onPressed: () => editCalf(index),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.delete, color: Colors.red),
+                                      onPressed: () => deleteCalf(index),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Text("Calving Date: ${calf['calvingDate'] ?? 'N/A'}"),
+                            Text("Lactation No: ${calf['lactationNo'] ?? 'N/A'}"),
+                            Text("Gender: ${calf['calfGender'] ?? 'N/A'}"),
+                            Text("Calf Name: ${calf['calfName'] ?? 'N/A'}"),
+                          ],
                         ),
-                      );
-                      if (updatedCalf != null) {
-                        _editCalf(index, updatedCalf);
-                      }
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _confirmDelete(index),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -167,14 +148,15 @@ class _CalvingRegisterState extends State<CalvingRegister> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xff6C60FE),
+        backgroundColor: const Color(0xff6C60FE),
         onPressed: () async {
-          final newCalf = await Navigator.push(
+          final newData = await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AddCalvingRegister()),
+            MaterialPageRoute(builder: (_) => const AddCalvingRegister()),
           );
-          if (newCalf != null) {
-            _addCalf(newCalf);
+          if (newData != null) {
+            setState(() => calves.add(Map<String, String>.from(newData)));
+            await saveCalves();
           }
         },
         child: const Icon(Icons.add, color: Colors.white),

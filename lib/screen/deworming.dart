@@ -11,17 +11,17 @@ class DewormingScreen extends StatefulWidget {
 }
 
 class _DewormingScreenState extends State<DewormingScreen> {
-  List<Map<String, String>> dewormingRecords = []; // Changed from calves to dewormingRecords
+  List<Map<String, String>> dewormingRecords = [];
 
   @override
   void initState() {
     super.initState();
-    _loadDewormingRecords(); // Changed from _loadCalves
+    _loadDewormingRecords();
   }
 
   Future<void> _loadDewormingRecords() async {
     final prefs = await SharedPreferences.getInstance();
-    final String? storedRecords = prefs.getString('deworming_records'); // Changed key
+    final String? storedRecords = prefs.getString('deworming_records');
 
     if (storedRecords != null) {
       try {
@@ -43,7 +43,7 @@ class _DewormingScreenState extends State<DewormingScreen> {
 
   Future<void> _saveDewormingRecords() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('deworming_records', json.encode(dewormingRecords)); // Changed key
+    await prefs.setString('deworming_records', json.encode(dewormingRecords));
   }
 
   void _addRecord(Map<String, String> recordData) {
@@ -101,7 +101,7 @@ class _DewormingScreenState extends State<DewormingScreen> {
           "Deworming Records",
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Color(0xff6C60FE),
+        backgroundColor: const Color(0xff6C60FE),
       ),
       body: dewormingRecords.isEmpty
           ? const Center(child: Text("No deworming records found"))
@@ -111,36 +111,58 @@ class _DewormingScreenState extends State<DewormingScreen> {
           final record = dewormingRecords[index];
           return Card(
             margin: const EdgeInsets.all(8.0),
-            child: ListTile(
-              title: Text("Cattle ID: ${record['cattle_id'] ?? 'N/A'}"),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
                 children: [
-                  Text("Deworming Date: ${record['deworming_date'] ?? 'N/A'}"),
-                  Text("Medicine Company: ${record['deworming_medicine_company'] ?? 'N/A'}"),
-                  Text("Medicine Name: ${record['deworming_medicine_name'] ?? 'N/A'}"),
-                ],
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () async {
-                      final updatedRecord = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AddDeworming(existingData: record),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Cattle ID: ${record['cattle_id'] ?? 'N/A'}",
+                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.edit, color: Colors.blue),
+                                      onPressed: () async {
+                                        final updatedRecord = await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => AddDeworming(existingData: record),
+                                          ),
+                                        );
+                                        if (updatedRecord != null) {
+                                          _editRecord(index, updatedRecord);
+                                        }
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.delete, color: Colors.red),
+                                      onPressed: () => _deleteRecord(index),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            Text("Deworming Date: ${record['deworming_date'] ?? 'N/A'}"),
+                            Text("Medicine Company: ${record['deworming_medicine_company'] ?? 'N/A'}"),
+                            Text("Medicine Name: ${record['deworming_medicine_name'] ?? 'N/A'}"),
+                          ],
                         ),
-                      );
-                      if (updatedRecord != null) {
-                        _editRecord(index, updatedRecord);
-                      }
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _deleteRecord(index),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -149,7 +171,7 @@ class _DewormingScreenState extends State<DewormingScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xff6C60FE),
+        backgroundColor: const Color(0xff6C60FE),
         onPressed: () async {
           final newRecord = await Navigator.push(
             context,
@@ -166,6 +188,7 @@ class _DewormingScreenState extends State<DewormingScreen> {
     );
   }
 }
+
 
 class AddDeworming extends StatefulWidget {
   final Map<String, String>? existingData;

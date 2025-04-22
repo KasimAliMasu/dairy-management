@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:dairy_management/profile/profile_screen.dart';
 import 'package:dairy_management/home/grid_item.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../screen/notification_screen.dart';
 
@@ -18,13 +18,16 @@ class _HomeScreenState extends State<HomeScreen> {
     return WillPopScope(
       onWillPop: () async {
         bool? shouldExit = await _showExitPopup(context);
-        return shouldExit;
+        if (shouldExit == true) {
+          SystemNavigator.pop();
+        }
+        return false;
       },
       child: Scaffold(
-        backgroundColor: Color(0xff6C60FE),
+        backgroundColor: const Color(0xff6C60FE),
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Color(0xff6C60FE),
+          backgroundColor: const Color(0xff6C60FE),
           elevation: 0,
           title: Row(
             children: [
@@ -48,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.welcome,
+                    AppLocalizations.of(context)?.welcome ?? 'Welcome',
                     style: const TextStyle(
                       fontSize: 14,
                       color: Colors.white,
@@ -56,8 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    AppLocalizations.of(context)!.feyzarsFarokhi,
-                    style: TextStyle(
+                    AppLocalizations.of(context)?.feyzarsFarokhi ?? 'Feyzars Farokhi',
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -88,7 +91,6 @@ class _HomeScreenState extends State<HomeScreen> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-
               Container(
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -111,31 +113,30 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-}
 
-/// Show exit confirmation popup when back button is pressed
-Future<bool> _showExitPopup(BuildContext context) async {
-  return await showDialog<bool>(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text(AppLocalizations.of(context)!.exitApp),
-      content: Text(AppLocalizations.of(context)!.areYouSureYouWantToExit),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(false), // Cancel
-          child: const Text(
-            'Cancel',
-            style: TextStyle(color: Colors.blue, fontSize: 16),
+  Future<bool?> _showExitPopup(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(AppLocalizations.of(context)?.exitApp ?? "Exit App"),
+        content: Text(AppLocalizations.of(context)?.areYouSureYouWantToExit ?? "Are you sure you want to exit?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.blue, fontSize: 16),
+            ),
           ),
-        ),
-        TextButton(
-          onPressed: () => SystemNavigator.pop(), // Exit app
-          child: const Text(
-            'Exit',
-            style: TextStyle(color: Colors.red, fontSize: 16),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text(
+              'Exit',
+              style: TextStyle(color: Colors.red, fontSize: 16),
+            ),
           ),
-        ),
-      ],
-    ),
-  ) ?? false;
+        ],
+      ),
+    );
+  }
 }

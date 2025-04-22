@@ -34,7 +34,7 @@ class GridItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          height: 150,
+          height: 170,
           decoration: BoxDecoration(
             color: containerColor,
             borderRadius: const BorderRadius.only(
@@ -56,7 +56,7 @@ class GridItem extends StatelessWidget {
             children: [
               Container(
                 width: 160,
-                height: 100,
+                height: 120,
                 decoration: BoxDecoration(
                   color:Colors.white,
                   borderRadius: const BorderRadius.only(
@@ -71,7 +71,7 @@ class GridItem extends StatelessWidget {
                   child: Image.asset(imageUrl),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               Text(
                 title,
                 textAlign: TextAlign.center,
@@ -81,7 +81,7 @@ class GridItem extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: 10),
+
             ],
           ),
         ),

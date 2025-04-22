@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
     final provider = Provider.of<LocaleProvider>(context);
 
     return MaterialApp(
+
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
